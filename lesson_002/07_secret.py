@@ -37,4 +37,4 @@ result_str += secret_message[2][5:15:2] + ' '
 result_str += secret_message[3][12:6:-1] + ' '
 result_str += secret_message[4][20:15:-1]
 print(result_str)
-
+# зачет!

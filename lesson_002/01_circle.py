@@ -39,3 +39,4 @@ print(distance_for_point_2 <= radius)
 # False
 
 
+# зачет!

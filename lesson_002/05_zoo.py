@@ -25,4 +25,4 @@ print(zoo)
 print('Лев сидит в', zoo.index('lion') + 1, 'клетке')
 print('Жаворонок сидит в', zoo.index('lark') + 1, 'клетке')
 
-
+# зачет!
