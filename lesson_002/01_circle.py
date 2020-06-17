@@ -9,7 +9,7 @@ radius = 42
 #       пи возьмите равным 3.1415926
 #       точность указывается в функции round()
 area_of_the_circle = 3.1415926 * radius ** 2
-print(area_of_the_circle)
+print(round(area_of_the_circle, 4))
 
 # Далее, пусть есть координаты точки
 point_1 = (23, 34)
