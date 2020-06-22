@@ -11,4 +11,10 @@
 
 a, b = 179, 37
 
-# TODO здесь ваш код
+result, temp_a = 0, a
+while a > 0:
+    result += 1
+    temp_a -= b
+    if temp_a < b:
+        break
+print(f'Целочисленное деление {a} на {b} дает {result}')
