@@ -50,3 +50,5 @@ for _ in range(100):
         sd.circle(random_center, radius, random_color)
 
 sd.pause()
+
+# зачет!

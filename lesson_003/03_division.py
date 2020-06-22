@@ -18,3 +18,4 @@ while a > 0:
     if temp_a < b:
         break
 print(f'Целочисленное деление {a} на {b} дает {result}')
+# зачет!

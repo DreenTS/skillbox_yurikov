@@ -61,7 +61,7 @@ for item in goods:
         total_price += total['price'] * total['quantity']
     print(f'{item} - {total_count} шт, стоимость {total_price} руб')
 
-
+# зачет!
 
 
 

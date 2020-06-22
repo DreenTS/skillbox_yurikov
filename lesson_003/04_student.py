@@ -18,3 +18,4 @@ for _ in range(9):
 parents_money = expenses_ten_month - educational_grant * 10
 
 print(f'Студенту надо попросить {round(parents_money, 2)} рублей')
+# зачет!

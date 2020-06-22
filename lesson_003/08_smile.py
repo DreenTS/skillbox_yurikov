@@ -45,3 +45,4 @@ for _ in range(10):
     color = sd.random_color()
     draw_smile(point_x, point_y, color)
 sd.pause()
+# зачет!
