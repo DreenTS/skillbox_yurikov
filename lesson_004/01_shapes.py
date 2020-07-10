@@ -36,7 +36,47 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# TODO здесь ваш код
+
+def triangle(point, angle, length=100):
+    for angles in range(0, 360, angle):
+        vector = sd.get_vector(start_point=point, angle=angles, length=length, width=3)
+        vector.draw()
+        point = vector.end_point
+
+
+def square(point, angle, length=100):
+    for angles in range(0, 360, angle):
+        vector = sd.get_vector(start_point=point, angle=angles, length=length, width=3)
+        vector.draw()
+        point = vector.end_point
+
+
+def pentagon(point, angle, length=100):
+    new_point = point
+    for angles in range(0, 360, angle):
+        vector = sd.get_vector(start_point=new_point, angle=angles, length=length, width=3)
+        vector.draw()
+        new_point = vector.end_point
+    sd.line(start_point=point, end_point=new_point, width=3)
+
+
+def hexagon(point, angle, length=100):
+    new_point = point
+    for angles in range(0, 360, angle):
+        vector = sd.get_vector(start_point=new_point, angle=angles, length=length, width=3)
+        vector.draw()
+        new_point = vector.end_point
+    sd.line(start_point=point, end_point=new_point, width=3)
+
+
+point_0 = sd.get_point(50, 100)
+triangle(point=point_0, angle=120, length=150)
+point_0 = sd.get_point(350, 100)
+square(point=point_0, angle=90, length=150)
+point_0 = sd.get_point(50, 300)
+pentagon(point=point_0, angle=72, length=150)
+point_0 = sd.get_point(350, 300)
+hexagon(point=point_0, angle=60, length=150)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
