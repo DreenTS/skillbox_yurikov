@@ -37,36 +37,31 @@ import simple_draw as sd
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
 
-def triangle(point, angle, length=100):
+def paint_fuction(point, angle, length=100):
+    new_point = point
     for angles in range(0, 360, angle):
-        vector = sd.get_vector(start_point=point, angle=angles, length=length, width=3)
-        vector.draw()
-        point = vector.end_point
+        if angles + angle >= 360:
+            sd.line(start_point=new_point, end_point=point, width=3)
+        else:
+            vector = sd.get_vector(start_point=new_point, angle=angles, length=length)
+            vector.draw(width=3)
+            new_point = vector.end_point
+
+
+def triangle(point, angle, length=100):
+    paint_fuction(point, angle, length)
 
 
 def square(point, angle, length=100):
-    for angles in range(0, 360, angle):
-        vector = sd.get_vector(start_point=point, angle=angles, length=length, width=3)
-        vector.draw()
-        point = vector.end_point
+    paint_fuction(point, angle, length)
 
 
 def pentagon(point, angle, length=100):
-    new_point = point
-    for angles in range(0, 360, angle):
-        vector = sd.get_vector(start_point=new_point, angle=angles, length=length, width=3)
-        vector.draw()
-        new_point = vector.end_point
-    sd.line(start_point=point, end_point=new_point, width=3)
+    paint_fuction(point, angle, length)
 
 
 def hexagon(point, angle, length=100):
-    new_point = point
-    for angles in range(0, 360, angle):
-        vector = sd.get_vector(start_point=new_point, angle=angles, length=length, width=3)
-        vector.draw()
-        new_point = vector.end_point
-    sd.line(start_point=point, end_point=new_point, width=3)
+    paint_fuction(point, angle, length)
 
 
 point_0 = sd.get_point(50, 100)
