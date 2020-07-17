@@ -30,7 +30,6 @@ import simple_draw as sd
 Основная часть
 '''
 
-
 # def draw_branches(point, angle, length=50.0):
 #     if length < 10:
 #         return
@@ -70,7 +69,6 @@ def draw_branches(point, angle, length=50.0):
 start_point = sd.get_point(300, 30)
 draw_branches(point=start_point, angle=90, length=100)
 
-
 sd.pause()
 
-
+# зачёт!

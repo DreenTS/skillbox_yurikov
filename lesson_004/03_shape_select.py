@@ -37,17 +37,29 @@ def pentagon(point, angle, length=100, color=sd.COLOR_YELLOW):
 def hexagon(point, angle, length=100, color=sd.COLOR_YELLOW):
     paint_fuction(point, angle, length, color)
 
+# TODO, Василий, давайте попробуем так же воспользоваться удобствами словаря.
+#  Где в качестве ключа будем использовать введённый пользователем номер.
+#  А в качества значений название фигуры и её вызов.
+#  Пример с 1 фигурой:
+#  example_dict_figure = {"0": {'figure_name': 'треугольник', 'func': triangle}}
+#  Вызов сможем произвести следующим образом:
+#  figure_func = example_dict_figure["0"]['func']
+#  figure_func()
+#  Это решение позволит сократить количество изменений в коде при добавлении нового цвета.
 
 print('\nВыберите фигуру, которая будет отрисована:')
 figures = ['Треугольник', 'Квадрат', 'Пятиугольник', 'Шестиугольник']
+
 for index, items in enumerate(figures):
     print(f'{index + 1} : {items}')
+
 while True:
     main_figure = int(input('Выберите номер желаемой фигуры: '))
     if 0 < main_figure <= len(figures):
         break
     else:
         print('Номер фигуры некорректный!')
+
 if main_figure == 1:
     point_0 = sd.get_point(325, 325)
     triangle(point=point_0, angle=120, length=150)

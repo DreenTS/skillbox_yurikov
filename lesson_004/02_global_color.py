@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import simple_draw as sd
 
+
 # Добавить цвет в функции рисования геом. фигур. из упр lesson_004/01_shapes.py
 # (код функций скопировать сюда и изменить)
 # Запросить у пользователя цвет фигуры посредством выбора из существующих:
@@ -54,14 +55,17 @@ colors = {
     '8': ['ГОЛУБОЙ', sd.COLOR_BLUE],
     '9': ['ФИОЛЕТОВЫЙ', sd.COLOR_PURPLE]
 }
+
 for items in colors:
     print(f'{items} : {colors[items][0]}')
+
 while True:
     main_color = input('Выберите номер желаемого цвета: ')
     if main_color in colors:
         break
     else:
         print('Номер цвета некорректный!')
+# TODO Одинаковые названия переменных лучше не использовать (point_0).
 point_0 = sd.get_point(50, 100)
 triangle(point=point_0, angle=120, length=150, color=colors[main_color][1])
 point_0 = sd.get_point(350, 100)

@@ -2,6 +2,7 @@
 
 import simple_draw as sd
 
+
 # Часть 1.
 # Написать функции рисования равносторонних геометрических фигур:
 # - треугольника
@@ -36,6 +37,8 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
+# TODO, Василий, пожалуйста, обратите внимание, PyCharm подчёркивает слово fuction.
+#  Дело в том, PyCharm есть проверка на корректность английских слов. Давайте исправим. в 01, 02 и 03 заданиях.
 
 def paint_fuction(point, angle, length=100):
     new_point = point
@@ -63,6 +66,12 @@ def pentagon(point, angle, length=100):
 def hexagon(point, angle, length=100):
     paint_fuction(point, angle, length)
 
+
+# TODO, Василий, пожалуйста, обратите внимание,
+#  1. параметр angle лучше передавать в функцию paint_fuction().
+#  И не оспользовать его в наших функциях triangle и т.д. Сейчас получается, что с помощью функции triangle
+#  можно рисовать квадрат и т.д.
+#  2. Одинаковые названия переменных лучше не использовать (point_0).
 
 point_0 = sd.get_point(50, 100)
 triangle(point=point_0, angle=120, length=150)
