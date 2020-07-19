@@ -11,7 +11,7 @@ sd.resolution = (800, 800)
 # Результат решения см lesson_004/results/exercise_03_shape_select.jpg
 
 
-def paint_fuction(point, angle, length=100, color=sd.COLOR_YELLOW):
+def paint_function(point, angle, length=100, color=sd.COLOR_YELLOW):
     new_point = point
     for angles in range(0, 360, angle):
         if angles + angle >= 360:
@@ -22,54 +22,48 @@ def paint_fuction(point, angle, length=100, color=sd.COLOR_YELLOW):
             new_point = vector.end_point
 
 
-def triangle(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def triangle(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=120, length=length, color=color)
 
 
-def square(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def square(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=90, length=length, color=color)
 
 
-def pentagon(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def pentagon(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=72, length=length, color=color)
 
 
-def hexagon(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def hexagon(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=60, length=length, color=color)
 
-# TODO, Василий, давайте попробуем так же воспользоваться удобствами словаря.
-#  Где в качестве ключа будем использовать введённый пользователем номер.
-#  А в качества значений название фигуры и её вызов.
-#  Пример с 1 фигурой:
-#  example_dict_figure = {"0": {'figure_name': 'треугольник', 'func': triangle}}
-#  Вызов сможем произвести следующим образом:
-#  figure_func = example_dict_figure["0"]['func']
-#  figure_func()
-#  Это решение позволит сократить количество изменений в коде при добавлении нового цвета.
 
 print('\nВыберите фигуру, которая будет отрисована:')
-figures = ['Треугольник', 'Квадрат', 'Пятиугольник', 'Шестиугольник']
+figure_dict = {
+    '1': {
+        'figure_name': 'Треугольник', 'function_name': triangle
+    },
+    '2': {
+        'figure_name': 'Квадрат', 'function_name': square
+    },
+    '3': {
+        'figure_name': 'Пятиугольник', 'function_name': pentagon
+    },
+    '4': {
+        'figure_name': 'Шестиугольник', 'function_name': hexagon
+    },
+}
 
-for index, items in enumerate(figures):
-    print(f'{index + 1} : {items}')
+for index in figure_dict:
+    print(f"{index} : {figure_dict[index]['figure_name']}")
 
 while True:
-    main_figure = int(input('Выберите номер желаемой фигуры: '))
-    if 0 < main_figure <= len(figures):
+    main_figure = input('Выберите номер желаемой фигуры: ')
+    if 0 < int(main_figure) <= len(figure_dict):
+        starting_point = sd.get_point(325, 325)
+        paint_figure_func = figure_dict[main_figure]['function_name']
+        paint_figure_func(point=starting_point, length=150)
         break
     else:
         print('Номер фигуры некорректный!')
-
-if main_figure == 1:
-    point_0 = sd.get_point(325, 325)
-    triangle(point=point_0, angle=120, length=150)
-elif main_figure == 2:
-    point_0 = sd.get_point(325, 325)
-    square(point=point_0, angle=90, length=150)
-elif main_figure == 3:
-    point_0 = sd.get_point(325, 325)
-    pentagon(point=point_0, angle=72, length=150)
-elif main_figure == 4:
-    point_0 = sd.get_point(325, 325)
-    hexagon(point=point_0, angle=60, length=150)
 sd.pause()

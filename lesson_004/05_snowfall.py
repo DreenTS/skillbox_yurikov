@@ -17,25 +17,17 @@ N = 20
 # sd.random_number()
 # sd.user_want_exit()
 
-list_of_snow = []
-list_of_length = []
+dict_of_snow = {}
 for i in range(N):
-    list_of_snow.append([sd.random_number(0, 901), sd.random_number(890, 1000)])
-    list_of_length.append(sd.random_number(10, 101))
-
-# TODO, Василий в принципе всё верно. Давайте немного улучшим код.
-#  Создадим для хранения снежинок словарь. В словаре ключом будет снежинка,
-#  а значение другой словарь с параметрами снежинки (Точка рисования, длина).
-#  Точку можно задавать и хранить одним объектом с помощью функции get_point передавая рандомные x и y,
-#  как Вы делаете сейчас при добавлении координат в list_of_snow.
-
-
+    random_point = sd.get_point(sd.random_number(0, 901), sd.random_number(890, 1000))
+    random_length = sd.random_number(10, 101)
+    dict_of_snow[i] = {'start_point': random_point, 'length': random_length}
 while True:
     sd.clear_screen()
     for i in range(N):
-        new_point = sd.get_point(list_of_snow[i][0], list_of_snow[i][1])
-        sd.snowflake(center=new_point, length=list_of_length[i])
-        list_of_snow[i][1] -= 10
+        new_point = dict_of_snow[i]['start_point']
+        sd.snowflake(center=new_point, length=dict_of_snow[i]['length'])
+        dict_of_snow[i]['start_point'].y -= 10
     sd.sleep(0.1)
     if sd.user_want_exit():
         break

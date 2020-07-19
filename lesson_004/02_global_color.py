@@ -16,7 +16,7 @@ import simple_draw as sd
 # Результат решения см lesson_004/results/exercise_02_global_color.jpg
 
 
-def paint_fuction(point, angle, length=100, color=sd.COLOR_YELLOW):
+def paint_function(point, angle, length=100, color=sd.COLOR_YELLOW):
     new_point = point
     for angles in range(0, 360, angle):
         if angles + angle >= 360:
@@ -27,20 +27,20 @@ def paint_fuction(point, angle, length=100, color=sd.COLOR_YELLOW):
             new_point = vector.end_point
 
 
-def triangle(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def triangle(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=120, length=length, color=color)
 
 
-def square(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def square(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=90, length=length, color=color)
 
 
-def pentagon(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def pentagon(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=72, length=length, color=color)
 
 
-def hexagon(point, angle, length=100, color=sd.COLOR_YELLOW):
-    paint_fuction(point, angle, length, color)
+def hexagon(point, length=100, color=sd.COLOR_YELLOW):
+    paint_function(point=point, angle=60, length=length, color=color)
 
 
 print('\nВыберите цвет, которым будут отрисованы все фигуры:')
@@ -65,14 +65,14 @@ while True:
         break
     else:
         print('Номер цвета некорректный!')
-# TODO Одинаковые названия переменных лучше не использовать (point_0).
-point_0 = sd.get_point(50, 100)
-triangle(point=point_0, angle=120, length=150, color=colors[main_color][1])
-point_0 = sd.get_point(350, 100)
-square(point=point_0, angle=90, length=150, color=colors[main_color][1])
-point_0 = sd.get_point(50, 300)
-pentagon(point=point_0, angle=72, length=150, color=colors[main_color][1])
-point_0 = sd.get_point(350, 300)
-hexagon(point=point_0, angle=60, length=150, color=colors[main_color][1])
+
+point_for_triangle = sd.get_point(50, 100)
+triangle(point=point_for_triangle, length=150, color=colors[main_color][1])
+point_for_square = sd.get_point(350, 100)
+square(point=point_for_square, length=150, color=colors[main_color][1])
+point_for_pentagon = sd.get_point(50, 300)
+pentagon(point=point_for_pentagon, length=150, color=colors[main_color][1])
+point_for_hexagon = sd.get_point(350, 300)
+hexagon(point=point_for_hexagon, length=150, color=colors[main_color][1])
 
 sd.pause()

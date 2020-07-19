@@ -37,10 +37,7 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# TODO, Василий, пожалуйста, обратите внимание, PyCharm подчёркивает слово fuction.
-#  Дело в том, PyCharm есть проверка на корректность английских слов. Давайте исправим. в 01, 02 и 03 заданиях.
-
-def paint_fuction(point, angle, length=100):
+def paint_function(point, angle, length=100):
     new_point = point
     for angles in range(0, 360, angle):
         if angles + angle >= 360:
@@ -51,36 +48,30 @@ def paint_fuction(point, angle, length=100):
             new_point = vector.end_point
 
 
-def triangle(point, angle, length=100):
-    paint_fuction(point, angle, length)
+def triangle(point, length=100):
+    paint_function(point=point, angle=120, length=length)
 
 
-def square(point, angle, length=100):
-    paint_fuction(point, angle, length)
+def square(point, length=100):
+    paint_function(point=point, angle=90, length=length)
 
 
-def pentagon(point, angle, length=100):
-    paint_fuction(point, angle, length)
+def pentagon(point, length=100):
+    paint_function(point=point, angle=72, length=length)
 
 
-def hexagon(point, angle, length=100):
-    paint_fuction(point, angle, length)
+def hexagon(point, length=100):
+    paint_function(point=point, angle=60, length=length)
 
 
-# TODO, Василий, пожалуйста, обратите внимание,
-#  1. параметр angle лучше передавать в функцию paint_fuction().
-#  И не оспользовать его в наших функциях triangle и т.д. Сейчас получается, что с помощью функции triangle
-#  можно рисовать квадрат и т.д.
-#  2. Одинаковые названия переменных лучше не использовать (point_0).
-
-point_0 = sd.get_point(50, 100)
-triangle(point=point_0, angle=120, length=150)
-point_0 = sd.get_point(350, 100)
-square(point=point_0, angle=90, length=150)
-point_0 = sd.get_point(50, 300)
-pentagon(point=point_0, angle=72, length=150)
-point_0 = sd.get_point(350, 300)
-hexagon(point=point_0, angle=60, length=150)
+point_for_triangle = sd.get_point(50, 100)
+triangle(point=point_for_triangle, length=150)
+point_for_square = sd.get_point(350, 100)
+square(point=point_for_square, length=150)
+point_for_pentagon = sd.get_point(50, 300)
+pentagon(point=point_for_pentagon, length=150)
+point_for_hexagon = sd.get_point(350, 300)
+hexagon(point=point_for_hexagon, length=150)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
