@@ -58,6 +58,9 @@ for index in figure_dict:
     print(f"{index} : {figure_dict[index]['figure_name']}")
 
 while True:
+    # TODO, Василий, если ввести текст, получим ошибку. В 02 такого не было.
+    #  Давайте тут так же введём проверку наличия ключа в словаре. Если есть, создаём нашу функцию b
+    #  запускаем после цикла.
     main_figure = input('Выберите номер желаемой фигуры: ')
     if 0 < int(main_figure) <= len(figure_dict):
         starting_point = sd.get_point(325, 325)

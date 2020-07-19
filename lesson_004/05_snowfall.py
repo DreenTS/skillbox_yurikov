@@ -22,8 +22,16 @@ for i in range(N):
     random_point = sd.get_point(sd.random_number(0, 901), sd.random_number(890, 1000))
     random_length = sd.random_number(10, 101)
     dict_of_snow[i] = {'start_point': random_point, 'length': random_length}
+
 while True:
     sd.clear_screen()
+
+    # TODO, хорошо, но давайте улучшим =)
+    #  1. Пройдёмся по словарю в цикле с помощью dict.items(). Это упростит код.
+    #  2. Переменные лучше называть более содержащими названиями =).
+    #  3. Сейчас y уменьшается всегда на 10. Давайте выберем рандомное число от 10 до 20 к примеру
+    #  или придумайте свой диапазон. В таком случае падать будут не кучей, а по отдельности.
+    #  После этого, можете приступать к 2ой части задания.
     for i in range(N):
         new_point = dict_of_snow[i]['start_point']
         sd.snowflake(center=new_point, length=dict_of_snow[i]['length'])

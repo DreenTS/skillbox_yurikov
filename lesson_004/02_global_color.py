@@ -76,3 +76,5 @@ point_for_hexagon = sd.get_point(350, 300)
 hexagon(point=point_for_hexagon, length=150, color=colors[main_color][1])
 
 sd.pause()
+
+# зачёт!

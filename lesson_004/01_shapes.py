@@ -98,3 +98,5 @@ hexagon(point=point_for_hexagon, length=150)
 
 
 sd.pause()
+
+# зачёт!
