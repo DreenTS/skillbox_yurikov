@@ -2,13 +2,13 @@
 
 import simple_draw as sd
 
-sd.resolution = (900, 900)
+sd.resolution = (800, 800)
 # На основе кода из практической части реализовать снегопад:
 # - создать списки данных для отрисовки N снежинок
 # - нарисовать падение этих N снежинок
 # - создать список рандомных длин лучей снежинок (от 10 до 100) и пусть все снежинки будут разные
 
-N = 20
+N = 25
 
 # Пригодятся функции
 # sd.get_point()
@@ -19,23 +19,27 @@ N = 20
 
 dict_of_snow = {}
 for i in range(N):
-    random_point = sd.get_point(sd.random_number(0, 901), sd.random_number(890, 1000))
+    random_point = sd.get_point(sd.random_number(0, 801), sd.random_number(750, 900))
     random_length = sd.random_number(10, 101)
     dict_of_snow[i] = {'start_point': random_point, 'length': random_length}
 
 while True:
-    sd.clear_screen()
-
-    # TODO, хорошо, но давайте улучшим =)
-    #  1. Пройдёмся по словарю в цикле с помощью dict.items(). Это упростит код.
-    #  2. Переменные лучше называть более содержащими названиями =).
-    #  3. Сейчас y уменьшается всегда на 10. Давайте выберем рандомное число от 10 до 20 к примеру
-    #  или придумайте свой диапазон. В таком случае падать будут не кучей, а по отдельности.
-    #  После этого, можете приступать к 2ой части задания.
-    for i in range(N):
-        new_point = dict_of_snow[i]['start_point']
-        sd.snowflake(center=new_point, length=dict_of_snow[i]['length'])
-        dict_of_snow[i]['start_point'].y -= 10
+    # Исправил тудушку, сделал вторую часть и усложнённое
+    # задание - рандомные отклонения вправо/влево при каждом шаге и
+    # сделать сугоб внизу экрана
+    # Так же изменил количество снежинок до 25
+    sd.start_drawing()
+    for index, snowflake_data in dict_of_snow.items():
+        point_for_old_snowflake = snowflake_data['start_point']
+        if point_for_old_snowflake.y <= 25:
+            snowflake_data['start_point'] = sd.get_point(sd.random_number(0, 801), sd.random_number(750, 950))
+        else:
+            sd.snowflake(center=point_for_old_snowflake, length=snowflake_data['length'], color=sd.background_color)
+            point_for_old_snowflake.y -= sd.random_number(10, 100)
+            point_for_old_snowflake.x -= sd.random_number(-10, 11)
+            point_for_new_snowflake = point_for_old_snowflake
+            sd.snowflake(center=point_for_new_snowflake, length=snowflake_data['length'])
+    sd.finish_drawing()
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
