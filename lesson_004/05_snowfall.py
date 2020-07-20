@@ -29,6 +29,7 @@ while True:
     # сделать сугоб внизу экрана
     # Так же изменил количество снежинок до 25
     sd.start_drawing()
+
     for index, snowflake_data in dict_of_snow.items():
         point_for_old_snowflake = snowflake_data['start_point']
         if point_for_old_snowflake.y <= 25:
@@ -37,8 +38,10 @@ while True:
             sd.snowflake(center=point_for_old_snowflake, length=snowflake_data['length'], color=sd.background_color)
             point_for_old_snowflake.y -= sd.random_number(10, 100)
             point_for_old_snowflake.x -= sd.random_number(-10, 11)
-            point_for_new_snowflake = point_for_old_snowflake
-            sd.snowflake(center=point_for_new_snowflake, length=snowflake_data['length'])
+            # point_for_new_snowflake = point_for_old_snowflake
+            # Можно сразу передавать point_for_old_snowflake, без лишней переменной.
+            sd.snowflake(center=point_for_old_snowflake, length=snowflake_data['length'])
+
     sd.finish_drawing()
     sd.sleep(0.1)
     if sd.user_want_exit():
@@ -92,3 +95,4 @@ sd.pause()
 #   и добавлять новую снежинку
 # Результат решения см https://youtu.be/XBx0JtxHiLg
 
+# зачёт!
