@@ -62,12 +62,7 @@ for index in figure_dict:
 while True:
     main_figure = input('Выберите номер желаемой фигуры: ')
     if main_figure in figure_dict:
-        # TODO, это условие if/else лишнее, пожалуйста, удалите и проверьте.
-        #  Лучше сразу задать функцию-переменную и сделать break, если ключ есть в нашем словаре.
-        if 0 < int(main_figure) <= len(figure_dict):
-            break
-        else:
-            print('Номер фигуры некорректный!')
+        break
     else:
         print('Номер фигуры некорректный!')
 starting_point = sd.get_point(325, 325)
