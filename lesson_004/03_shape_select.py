@@ -62,10 +62,14 @@ for index in figure_dict:
 while True:
     main_figure = input('Выберите номер желаемой фигуры: ')
     if main_figure in figure_dict:
+        paint_figure_func = figure_dict[main_figure]['function_name']
+        # Лучше тут создавать переменную, так чуть понятнее, зачем делали цикл
         break
     else:
         print('Номер фигуры некорректный!')
 starting_point = sd.get_point(325, 325)
-paint_figure_func = figure_dict[main_figure]['function_name']
+
 paint_figure_func(point=starting_point, length=150)
 sd.pause()
+
+# зачёт!
