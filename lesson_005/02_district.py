@@ -34,3 +34,4 @@ for name in soviet_h2_r2.folks:
 
 # Никак не додумался, как ещё можно сделать. Если есть способ - подскажите плз.
 print(', '.join(list_of_residents))
+# зачет!

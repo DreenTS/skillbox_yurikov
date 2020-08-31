@@ -11,3 +11,5 @@ for name in enumerate(room_1.folks):
 print('\nВ комнате room_2 живут:')
 for name in enumerate(room_2.folks):
     print(name[0] + 1, name[1])
+
+# зачет!
