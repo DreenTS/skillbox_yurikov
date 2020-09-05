@@ -43,5 +43,38 @@
 # только с загаданным числом, а 01_mastermind - с пользователем и просто передает числа на проверку движку.
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
+from time import sleep
+import os
+from mastermind_engine import make_secret_number, check_the_number
 
-# TODO здесь ваш код...
+while True:
+    os.system('cls')
+    true_number = make_secret_number()
+    print('Загадываю число, подождите')
+    for _ in range(3):
+        print('.', end='')
+        sleep(0.7)
+    print('\nЯ загадал четырёхзначное число, не начинающееся с нуля, все цифры которого разные.')
+    print(true_number)
+    guess_number = ''
+    bulls_and_cows = {'bulls': 0, 'cows': 0}
+    count_of_moves = 0
+    while guess_number != true_number:
+        guess_number = input('Введите ваш вариант: ')
+        count_of_moves += 1
+        temp_set = set(guess_number)
+        if not guess_number.isdigit():
+            print('\nВы ввели не число!')
+        elif len(guess_number) != 4:
+            print('\nВведите четырёхзначное число!')
+        elif guess_number[0] == '0':
+            print('\nЧисло не должно начинаться с 0!')
+        elif len(temp_set) != len(guess_number):
+            print('\nВсе цифры числа должны быть разные!')
+        else:
+            bulls_and_cows = check_the_number(guess_number)
+            print(f"> быки - {bulls_and_cows['bulls']}, коровы - {bulls_and_cows['cows']}")
+        if bulls_and_cows['bulls'] == 4:
+            print(f'Правильно! Загаданное число: {true_number}. Число ходов: {count_of_moves}.')
+    if str(input('Хотите ещё партию? (Если да, введите "+", если нет - любов другой знак): ')) != '+':
+        break
