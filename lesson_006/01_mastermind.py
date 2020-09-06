@@ -63,6 +63,7 @@ while True:
         guess_number = input('Введите ваш вариант: ')
         count_of_moves += 1
         temp_set = set(guess_number)
+        # TODO: унесите валидацию потльзовательского ввода в отдельную функцию
         if not guess_number.isdigit():
             print('\nВы ввели не число!')
         elif len(guess_number) != 4:

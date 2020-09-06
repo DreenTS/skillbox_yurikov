@@ -1,6 +1,6 @@
 import simple_draw as sd
 
-DICT_OF_SNOW = {}
+DICT_OF_SNOW = {}  # TODO: см. замечание по 01 задаче
 LAST_SNOWFLAKE = -1
 
 

@@ -1,6 +1,7 @@
 from random import choice
 
-SECRET_NUMBER = ''
+SECRET_NUMBER = ''  # TODO: капслоком в питоне принято именовать только константы.
+                    # TODO: наше число не является константой, т.к. оно вычисляется в процессе выполнения программы
 
 
 def make_secret_number():
