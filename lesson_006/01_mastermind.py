@@ -47,6 +47,25 @@ from time import sleep
 import os
 from mastermind_engine import make_secret_number, check_the_number
 
+
+def check_input(number):
+    temp_set = set(number)
+    if not number.isdigit():
+        print('\nВы ввели не число!')
+        return False
+    elif len(number) != 4:
+        print('\nВведите четырёхзначное число!')
+        return False
+    elif number[0] == '0':
+        print('\nЧисло не должно начинаться с 0!')
+        return False
+    elif len(temp_set) != len(number):
+        print('\nВсе цифры числа должны быть разные!')
+        return False
+    else:
+        return True
+
+
 while True:
     os.system('cls')
     true_number = make_secret_number()
@@ -62,17 +81,7 @@ while True:
     while guess_number != true_number:
         guess_number = input('Введите ваш вариант: ')
         count_of_moves += 1
-        temp_set = set(guess_number)
-        # TODO: унесите валидацию потльзовательского ввода в отдельную функцию
-        if not guess_number.isdigit():
-            print('\nВы ввели не число!')
-        elif len(guess_number) != 4:
-            print('\nВведите четырёхзначное число!')
-        elif guess_number[0] == '0':
-            print('\nЧисло не должно начинаться с 0!')
-        elif len(temp_set) != len(guess_number):
-            print('\nВсе цифры числа должны быть разные!')
-        else:
+        if check_input(guess_number):
             bulls_and_cows = check_the_number(guess_number)
             print(f"> быки - {bulls_and_cows['bulls']}, коровы - {bulls_and_cows['cows']}")
         if bulls_and_cows['bulls'] == 4:
