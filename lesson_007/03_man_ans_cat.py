@@ -163,15 +163,18 @@ class Cat:
 my_sweet_home = House()
 dude = Man('Dude')
 dude.go_to_the_house(my_sweet_home)
-cat = Cat('Max')
-dude.pet(cat, my_sweet_home)
+cats = [Cat('Max'), Cat('Jack'), Cat('Hope')]
+for cat in cats:
+    dude.pet(cat, my_sweet_home)
 for day in range(1, 366):
     print(f'================ день {day} ==================')
     dude.act()
-    cat.act()
+    for cat in cats:
+        cat.act()
     print('--- в конце дня ---')
     print(dude)
-    print(cat)
+    for cat in cats:
+        print(cat)
     print(my_sweet_home)
 
 # Усложненное задание (делать по желанию)
