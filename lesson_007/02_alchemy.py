@@ -18,6 +18,8 @@
 # Примеры преобразований:
 #   print(Water(), '+', Air(), '=', Water() + Air())
 #   print(Fire(), '+', Air(), '=', Fire() + Air())
+from random import choice
+
 
 class Water:
 
@@ -146,12 +148,56 @@ class Lava:
         return self.name
 
 
+'''Усложнённое задание'''
+
+
+class ReverseMagicConverter:
+
+    """
+        Обратный преобразователь взаимодействует только с производными
+        от простых элементов и возвращает случайный из двух элементов
+    """
+
+    def __init__(self):
+        self.name = 'Обратный преобразователь'
+
+    def __add__(self, other):
+        if other.name == 'Шторм':
+            return choice([Water(), Air()])
+        elif other.name == 'Пар':
+            return choice([Water(), Fire()])
+        elif other.name == 'Грязь':
+            return choice([Water(), Earth()])
+        elif other.name == 'Молния':
+            return choice([Air(), Fire()])
+        elif other.name == 'Пыль':
+            return choice([Air(), Earth()])
+        elif other.name == 'Лава':
+            return choice([Fire(), Earth()])
+        else:
+            return None
+
+    def __str__(self):
+        return self.name
+
+
 print(Water(), '+', Air(), '=', Water() + Air())
 print(Water(), '+', Fire(), '=', Water() + Fire())
 print(Water(), '+', Earth(), '=', Water() + Earth())
 print(Air(), '+', Fire(), '=', Air() + Fire())
 print(Air(), '+', Earth(), '=', Air() + Earth())
 print(Fire(), '+', Earth(), '=', Fire() + Earth())
+print(Fire(), '+', Dust(), '=', Fire() + Dust())
+
+print('\nУсложнённое задание.')
+
+print(ReverseMagicConverter(), '+', Storm(), '=', ReverseMagicConverter() + Storm())
+print(ReverseMagicConverter(), '+', Steam(), '=', ReverseMagicConverter() + Steam())
+print(ReverseMagicConverter(), '+', Dirt(), '=', ReverseMagicConverter() + Dirt())
+print(ReverseMagicConverter(), '+', Lightning(), '=', ReverseMagicConverter() + Lightning())
+print(ReverseMagicConverter(), '+', Dust(), '=', ReverseMagicConverter() + Dust())
+print(ReverseMagicConverter(), '+', Lava(), '=', ReverseMagicConverter() + Lava())
+print(ReverseMagicConverter(), '+', Fire(), '=', ReverseMagicConverter() + Fire())
 
 # Усложненное задание (делать по желанию)
 # Добавить еще элемент в игру.
