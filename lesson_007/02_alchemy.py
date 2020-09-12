@@ -27,7 +27,7 @@ class Water:
         self.name = 'Вода'
 
     def __add__(self, other):
-        if other.name == 'Воздух':
+        if other.name == 'Воздух':  # TODO: принадлежность объекта к классу лучше определять через isinstance
             return Storm()
         elif other.name == 'Огонь':
             return Steam()
