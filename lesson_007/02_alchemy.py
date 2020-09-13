@@ -27,11 +27,11 @@ class Water:
         self.name = 'Вода'
 
     def __add__(self, other):
-        if other.name == 'Воздух':  # TODO: принадлежность объекта к классу лучше определять через isinstance
+        if isinstance(other, Air):
             return Storm()
-        elif other.name == 'Огонь':
+        elif isinstance(other, Fire):
             return Steam()
-        elif other.name == 'Земля':
+        elif isinstance(other, Earth):
             return Dirt()
         else:
             return None
@@ -45,11 +45,11 @@ class Air:
         self.name = 'Воздух'
 
     def __add__(self, other):
-        if other.name == 'Вода':
+        if isinstance(other, Water):
             return Storm()
-        elif other.name == 'Огонь':
+        elif isinstance(other, Fire):
             return Lightning()
-        elif other.name == 'Земля':
+        elif isinstance(other, Earth):
             return Dust()
         else:
             return None
@@ -63,11 +63,11 @@ class Fire:
         self.name = 'Огонь'
 
     def __add__(self, other):
-        if other.name == 'Вода':
+        if isinstance(other, Water):
             return Steam()
-        elif other.name == 'Воздух':
+        elif isinstance(other, Air):
             return Lightning()
-        elif other.name == 'Земля':
+        elif isinstance(other, Earth):
             return Lava()
         else:
             return None
@@ -81,11 +81,11 @@ class Earth:
         self.name = 'Земля'
 
     def __add__(self, other):
-        if other.name == 'Вода':
+        if isinstance(other, Water):
             return Dirt()
-        elif other.name == 'Воздух':
+        elif isinstance(other, Air):
             return Dust()
-        elif other.name == 'Огонь':
+        elif isinstance(other, Fire):
             return Lava()
         else:
             return None
@@ -162,17 +162,17 @@ class ReverseMagicConverter:
         self.name = 'Обратный преобразователь'
 
     def __add__(self, other):
-        if other.name == 'Шторм':
+        if isinstance(other, Storm):
             return choice([Water(), Air()])
-        elif other.name == 'Пар':
+        elif isinstance(other, Steam):
             return choice([Water(), Fire()])
-        elif other.name == 'Грязь':
+        elif isinstance(other, Dirt):
             return choice([Water(), Earth()])
-        elif other.name == 'Молния':
+        elif isinstance(other, Lightning):
             return choice([Air(), Fire()])
-        elif other.name == 'Пыль':
+        elif isinstance(other, Dust):
             return choice([Air(), Earth()])
-        elif other.name == 'Лава':
+        elif isinstance(other, Lava):
             return choice([Fire(), Earth()])
         else:
             return None
