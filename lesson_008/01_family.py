@@ -73,10 +73,15 @@ class Man:
             cprint('В доме закончилась еда!', color='red')
             return True
         else:
-            self.house.food -= 30
-            self.fullness += 30
+            if isinstance(self, Child):
+                self.house.food -= 10
+                self.fullness += 15
+                self.house.total_food_eaten += 10
+            else:
+                self.house.food -= 30
+                self.fullness += 30
+                self.house.total_food_eaten += 30
             cprint(f'{self.name} только что поел(-ла).', color='cyan')
-            self.house.total_food_eaten += 30
             return False
 
     def act(self):
@@ -164,17 +169,41 @@ class Wife(Man):
             cprint('В доме не так уж и много грязи, жить можно :)', color='cyan')
 
 
+class Child(Man):
+
+    def act(self):
+        dice = randint(1, 6)
+        if self.fullness <= 0:
+            cprint(f'{self.name} умер :(', color='red')
+        elif self.fullness <= 50:
+            cprint(f'{self.name} голоден.', color='yellow')
+            self.eat()
+        elif dice in range(1, 3):
+            cprint(f'{self.name} голоден.', color='yellow')
+            self.eat()
+        else:
+            cprint(f'{self.name} хочет спать.', color='yellow')
+            self.sleep()
+
+    def sleep(self):
+        cprint(f'{self.name} сладко спит, милое дитя.', color='cyan')
+        self.fullness -= 10
+
+
 home = House()
 dad = Husband(name='Василий', house=home)
 mom = Wife(name='Мария', house=home)
+son = Child(name='Макс', house=home)
 
 for day in range(365):
     cprint(f'================== День {day + 1} ==================', color='green')
     dad.act()
     mom.act()
+    son.act()
     cprint('В конце дня:', color='magenta')
     cprint(dad, color='blue')
     cprint(mom, color='blue')
+    cprint(son, color='blue')
     cprint(home, color='blue')
 cprint(f'\nОбщая сводка за год.', color='green')
 cprint(f'Заработано денег: {home.total_money_earned}.\nСъедено еды: {home.total_food_eaten}.\n'
@@ -235,26 +264,6 @@ class Cat:
 # отличия от взрослых - кушает максимум 10 единиц еды,
 # степень счастья  - не меняется, всегда ==100 ;)
 
-class Child:
-
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        return super().__str__()
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-
-# TODO после реализации второй части - отдать на проверку учителем две ветки
-
 
 ######################################################## Часть третья
 #
@@ -262,23 +271,6 @@ class Child:
 # влить в мастер все коммиты из ветки develop и разрешить все конфликты
 # отправить на проверку учителем.
 
-
-home = House()
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-kolya = Child(name='Коля')
-murzik = Cat(name='Мурзик')
-
-for day in range(365):
-    cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    kolya.act()
-    murzik.act()
-    cprint(serge, color='cyan')
-    cprint(masha, color='cyan')
-    cprint(kolya, color='cyan')
-    cprint(murzik, color='cyan')
 
 # Усложненное задание (делать по желанию)
 #
