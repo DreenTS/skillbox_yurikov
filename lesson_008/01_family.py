@@ -52,9 +52,10 @@ class House:
         self.money = 100
         self.food = 50
         self.dirt = 0
+        self.cat_food = 30
 
     def __str__(self):
-        return f'Состояние дома: {self.money} денег, {self.food} еды, {self.dirt} грязи.'
+        return f'Состояние дома: {self.money} денег, {self.food} еды, {self.cat_food} кошачей еды, {self.dirt} грязи.'
 
 
 class Man:
@@ -86,24 +87,35 @@ class Man:
         if self.fullness <= 0 or self.happiness < 10:
             cprint(f'{self.name} умер :(', color='red')
             return False
-        elif self.fullness <= 40:
+        elif self.fullness <= 50:
             cprint(f'{self.name} голоден.', color='yellow')
             return self.eat()
         return True
+
+    def play_with_cat(self):
+        cprint(f'{self.name} гладит котика. Весь день.', color='cyan')
+        self.fullness -= 10
+        if self.happiness <= 90:
+            self.happiness += 5
 
 
 class Husband(Man):
 
     def act(self):
         if super().act():
-            dice = randint(1, 7)
+            dice = randint(1, 8)
             if self.house.money < 140:
                 cprint('В доме осталось не так много денег...', color='red')
                 self.work()
             elif dice in range(1, 3):
+                cprint(f'{self.name} хочет поиграть в танчики.', color='yellow')
                 self.gaming()
-            else:
+            elif dice in range(3, 8):
+                cprint(f'{self.name}, можно и на работу сходить.', color='yellow')
                 self.work()
+            else:
+                cprint(f'{self.name} хочет погладить котика.', color='yellow')
+                self.play_with_cat()
 
     def work(self):
         cprint(f'{self.name} сходил на работу и принёс денег в дом.', color='cyan')
@@ -122,7 +134,7 @@ class Wife(Man):
 
     def act(self):
         if super().act():
-            dice = randint(1, 8)
+            dice = randint(1, 10)
             if self.house.food < 70:
                 cprint('В доме почти не осталось еды...', color='yellow')
                 self.shopping()
@@ -130,23 +142,28 @@ class Wife(Man):
                 cprint(f'{self.name} решила прибраться.', color='yellow')
                 self.clean_house()
             elif dice in range(5, 8):
+                cprint(f'{self.name} захотела шубу.', color='yellow')
                 self.buy_fur_coat()
-            else:
+            elif dice in range(8, 10):
                 cprint(f'{self.name} решила прикупить чего-нибудь вкусного.', color='yellow')
                 self.shopping()
+            else:
+                cprint(f'{self.name} хочет погладить котика.', color='yellow')
+                self.play_with_cat()
 
     def shopping(self):
         if self.house.money >= 100:
-            cprint(f'{self.name} купила домой покушать.', color='cyan')
-            self.house.money -= 100
-            self.house.food += 100
+            cprint(f'{self.name} купила домой покушать. И коту тоже.', color='cyan')
+            self.house.money -= 84
+            self.house.food += 70
+            self.house.cat_food += 14
             self.fullness -= 10
         else:
             cprint('В доме осталось не так много денег...', color='red')
 
     def buy_fur_coat(self):
         if self.house.money >= 350:
-            cprint(f'{self.name} захотела шубу. {self.name} купила шубу.', color='cyan')
+            cprint(f'{self.name} купила шубу.', color='cyan')
             if self.happiness <= 70:
                 self.happiness += 60
             self.house.money -= 350
@@ -164,17 +181,66 @@ class Wife(Man):
             cprint('В доме не так уж и много грязи, жить можно :)', color='cyan')
 
 
+class Cat:
+
+    def __init__(self, name, house):
+        self.name = name
+        self.fullness = 30
+        self.house = house
+
+    def __str__(self):
+        return f'Состояние {self.name}: {self.fullness} сытости, 100 кошачности.'
+
+    def act(self):
+        dice = randint(1, 10)
+        if self.fullness <= 0:
+            cprint(f'{self.name} умер :( Бедный котик...', color='red')
+        elif self.fullness <= 60:
+            cprint(f'{self.name} очень голоден.', color='yellow')
+            self.eat()
+        elif dice in range(1, 6):
+            cprint(f'{self.name} хочет спать весь день.', color='yellow')
+            self.sleep()
+        elif dice in range(6, 9):
+            cprint(f'{self.name} проголодался.', color='yellow')
+            self.eat()
+        else:
+            cprint(f'{self.name} решил похулиганить.', color='yellow')
+            self.soil()
+
+    def eat(self):
+        if self.house.cat_food < 10:
+            cprint('В доме закончилась еда для кота!', color='red')
+        else:
+            self.house.cat_food -= 6
+            self.fullness += 12
+            cprint(f'{self.name} только что поел как кот.', color='cyan')
+
+    def sleep(self):
+        cprint(f'{self.name} сладко спит.', color='cyan')
+        self.fullness -= 10
+
+    def soil(self):
+        cprint(f'{self.name} коварно портит обои. Вот зачем?...', color='cyan')
+        self.fullness -= 10
+        self.house.dirt += 5
+
+
 home = House()
 dad = Husband(name='Василий', house=home)
 mom = Wife(name='Мария', house=home)
+cat = Cat(name='Борис', house=home)
+
 
 for day in range(365):
     cprint(f'================== День {day + 1} ==================', color='green')
     dad.act()
     mom.act()
+    cat.act()
     cprint('В конце дня:', color='magenta')
     cprint(dad, color='blue')
     cprint(mom, color='blue')
+    cprint(cat, color='blue')
     cprint(home, color='blue')
 cprint(f'\nОбщая сводка за год.', color='green')
 cprint(f'Заработано денег: {home.total_money_earned}.\nСъедено еды: {home.total_food_eaten}.\n'
@@ -206,24 +272,6 @@ cprint(f'Заработано денег: {home.total_money_earned}.\nСъеде
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
-class Cat:
-
-    def __init__(self):
-        pass
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-    def soil(self):
-        pass
-
-
 ######################################################## Часть вторая бис
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
@@ -253,32 +301,12 @@ class Child:
         pass
 
 
-# TODO после реализации второй части - отдать на проверку учителем две ветки
-
-
 ######################################################## Часть третья
 #
 # после подтверждения учителем второй части (обоих веток)
 # влить в мастер все коммиты из ветки develop и разрешить все конфликты
 # отправить на проверку учителем.
 
-
-home = House()
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-kolya = Child(name='Коля')
-murzik = Cat(name='Мурзик')
-
-for day in range(365):
-    cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    kolya.act()
-    murzik.act()
-    cprint(serge, color='cyan')
-    cprint(masha, color='cyan')
-    cprint(kolya, color='cyan')
-    cprint(murzik, color='cyan')
 
 # Усложненное задание (делать по желанию)
 #
