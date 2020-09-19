@@ -23,8 +23,35 @@
 #   см https://refactoring.guru/ru/design-patterns/template-method
 #   и https://gitlab.skillbox.ru/vadim_shandrinov/python_base_snippets/snippets/4
 
-# TODO здесь ваш код
+class LogParser:
 
+    def __init__(self, file_in_name, file_out_name):
+        self.file_in = file_in_name
+        self.file_out = file_out_name
+        self.log_dict = {}
+
+    def fill_dict(self):
+        with open(self.file_in, 'r', encoding='cp1251') as file:
+            for line in file:
+                self._fill_dict_for_line(line)
+
+    def _fill_dict_for_line(self, line):
+        if line[1:17] in self.log_dict:
+            if line[-4] == 'N':
+                self.log_dict[line[1:17]] += 1
+        else:
+            self.log_dict[line[1:17]] = 1
+
+    def fill_file(self):
+        with open(self.file_out, 'w', encoding='utf8') as file:
+            for date, count in self.log_dict.items():
+                file.write('[' + date + '] ' + str(count) + '\n')
+
+
+parser = LogParser(file_in_name='events.txt', file_out_name='total_parse.txt')
+parser.fill_dict()
+parser.fill_file()
+print('Done!!! Check the file.')
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
