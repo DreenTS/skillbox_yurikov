@@ -58,6 +58,8 @@ class Statter:
 
 book_stat = Statter('python_snippets/voyna-i-mir.txt.zip')
 book_stat.counter()
+
+# TODO: сделайте вывод собранной информации методом Statter
 print(f'+{"+":-^19}-+')
 print(f'|{"длина":^9}|{"частота":^10}|')
 print(f'+{"+":-^19}-+')
@@ -68,6 +70,7 @@ for char, count in book_stat.stat_dict.items():
 print(f'+{"+":-^19}-+')
 print(f'|{"итого":^9}|{total:^10}|')
 print(f'+{"+":-^19}-+')
+# TODO: и можно доделывать
 
 # После зачета первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию

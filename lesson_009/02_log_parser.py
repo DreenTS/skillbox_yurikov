@@ -52,6 +52,8 @@ parser = LogParser(file_in_name='events.txt', file_out_name='total_parse.txt')
 parser.fill_dict()
 parser.fill_file()
 print('Done!!! Check the file.')
+
+# TODO: можно доделывать
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
