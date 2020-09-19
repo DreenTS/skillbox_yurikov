@@ -4,6 +4,7 @@ import os
 import time
 import shutil
 
+
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
 # Например, так:
@@ -40,7 +41,38 @@ import shutil
 #   см https://refactoring.guru/ru/design-patterns/template-method
 #   и https://gitlab.skillbox.ru/vadim_shandrinov/python_base_snippets/snippets/4
 
-# TODO здесь ваш код
+
+class IconsSorter:
+
+    def __init__(self, dir_in_name, dir_out_name):
+        self.dir_in = os.path.normpath(dir_in_name)
+        self.dir_out = os.path.normpath(dir_out_name)
+
+    def scan_and_sort(self, name=None):
+        if name is None:
+            name = self.dir_in
+        for dirpath, dirnames, filenames in os.walk(name):
+            if dirnames:
+                for dir in dirnames:
+                    self.scan_and_sort(os.path.join(name, dir))
+            if filenames:
+                self._scan_and_sort_for_file(dirpath, filenames)
+
+    def _scan_and_sort_for_file(self, dirpath, filenames):
+        for file in filenames:
+            file_time = os.path.getmtime(os.path.join(dirpath, file))
+            right_file_time = time.gmtime(file_time)
+            temp_path = os.path.join(self.dir_out, str(right_file_time[0]), str(right_file_time[1]))
+            if not os.path.isdir(temp_path):
+                os.makedirs(temp_path)
+                shutil.copy2(os.path.join(dirpath, file), temp_path)
+            else:
+                shutil.copy2(os.path.join(dirpath, file), temp_path)
+
+
+sorter = IconsSorter(dir_in_name='icons', dir_out_name='icons_by_year')
+sorter.scan_and_sort()
+print('Done!!!')
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
