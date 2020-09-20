@@ -30,17 +30,36 @@ class LogParser:
         self.file_out = file_out_name
         self.log_dict = {}
 
-    def fill_dict(self):
-        with open(self.file_in, 'r', encoding='cp1251') as file:
-            for line in file:
-                self._fill_dict_for_line(line)
+    def fill_dict(self, mode=1):
 
-    def _fill_dict_for_line(self, line):
-        if line[1:17] in self.log_dict:
-            if line[-4] == 'N':
-                self.log_dict[line[1:17]] += 1
+        """
+            группировка вобытий
+            mode=1  - по минутам
+            mode=2  - по часам
+            mode=3  - по месяцу
+            mode=4  - по году
+        """
+        if mode not in range(1, 5):
+            print('Ошибка при выборе типа группировки.')
         else:
-            self.log_dict[line[1:17]] = 1
+            with open(self.file_in, 'r', encoding='cp1251') as file:
+                for line in file:
+                    self._fill_dict_for_line(line, mode=mode)
+
+    def _fill_dict_for_line(self, line, mode=1):
+        if mode == 1:
+            n = 17
+        elif mode == 2:
+            n = 14
+        elif mode == 3:
+            n = 8
+        else:
+            n = 5
+        if line[1:n] in self.log_dict:
+            if line[-4] == 'N':
+                self.log_dict[line[1:n]] += 1
+        else:
+            self.log_dict[line[1:n]] = 1
 
     def fill_file(self):
         with open(self.file_out, 'w', encoding='utf8') as file:
@@ -49,11 +68,20 @@ class LogParser:
 
 
 parser = LogParser(file_in_name='events.txt', file_out_name='total_parse.txt')
-parser.fill_dict()
+# группировка по минутам
+parser.fill_dict(mode=1)
 parser.fill_file()
+# группировка по часам
+# parser.fill_dict(mode=2)
+# parser.fill_file()
+# # группировка по месяцу
+# parser.fill_dict(mode=3)
+# parser.fill_file()
+# # группировка по году
+# parser.fill_dict(mode=4)
+# parser.fill_file()
 print('Done!!! Check the file.')
 
-# TODO: можно доделывать
 # После зачета первого этапа нужно сделать группировку событий
 #  - по часам
 #  - по месяцу
