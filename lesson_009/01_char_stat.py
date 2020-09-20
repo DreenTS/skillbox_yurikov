@@ -45,7 +45,6 @@ class Statter:
         with open(self.file_name, 'r', encoding='cp1251') as file:
             for line in file:
                 self._counter_for_one_line(line)
-        self.stat_dict = dict(sorted(self.stat_dict.items(), key=lambda el: el[1], reverse=True))
 
     def _counter_for_one_line(self, line):
         for char in line:
@@ -55,22 +54,54 @@ class Statter:
                 else:
                     self.stat_dict[char] = 1
 
+    def sort_dict(self, mode=1):
+
+        """
+            упорядочивание статистики
+            mode=1  - по частоте по убыванию
+            mode=2  - по частоте по возрастанию
+            mode=3  - по алфавиту по возрастанию
+            mode=4  - по алфавиту по убыванию
+        """
+        if mode not in range(1, 5):
+            print('Ошибка сортировки.')
+        elif mode == 1:
+            temp_sort = sorted(self.stat_dict.items(), key=lambda el: el[1], reverse=True)
+        elif mode == 2:
+            temp_sort = sorted(self.stat_dict.items(), key=lambda el: el[1], reverse=False)
+        elif mode == 3:
+            temp_sort = sorted(self.stat_dict.items(), key=lambda el: el[0], reverse=True)
+        else:
+            temp_sort = sorted(self.stat_dict.items(), key=lambda el: el[0], reverse=False)
+        self.stat_dict = dict(temp_sort)
+
+    def print_stat(self):
+        print(f'+{"+":-^19}-+')
+        print(f'|{"длина":^9}|{"частота":^10}|')
+        print(f'+{"+":-^19}-+')
+        total = 0
+        for char, count in self.stat_dict.items():
+            print(f'|{char:^9}|{count:^10}|')
+            total += count
+        print(f'+{"+":-^19}-+')
+        print(f'|{"итого":^9}|{total:^10}|')
+        print(f'+{"+":-^19}-+')
+
 
 book_stat = Statter('python_snippets/voyna-i-mir.txt.zip')
 book_stat.counter()
-
-# TODO: сделайте вывод собранной информации методом Statter
-print(f'+{"+":-^19}-+')
-print(f'|{"длина":^9}|{"частота":^10}|')
-print(f'+{"+":-^19}-+')
-total = 0
-for char, count in book_stat.stat_dict.items():
-    print(f'|{char:^9}|{count:^10}|')
-    total += count
-print(f'+{"+":-^19}-+')
-print(f'|{"итого":^9}|{total:^10}|')
-print(f'+{"+":-^19}-+')
-# TODO: и можно доделывать
+# по частоте по убыванию
+book_stat.sort_dict(mode=1)
+book_stat.print_stat()
+# по частоте по возрастанию
+book_stat.sort_dict(mode=2)
+book_stat.print_stat()
+# по алфавиту по убыванию
+book_stat.sort_dict(mode=3)
+book_stat.print_stat()
+# по алфавиту по возрастанию
+book_stat.sort_dict(mode=4)
+book_stat.print_stat()
 
 # После зачета первого этапа нужно сделать упорядочивание статистики
 #  - по частоте по возрастанию
