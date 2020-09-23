@@ -80,3 +80,4 @@ while True:
 print(f'Ура! carma = {curr_carma}, вышли из цикла на {days} день.')
 
 # https://goo.gl/JnsDqu
+# зачет!

@@ -61,3 +61,4 @@ with open('registrations.txt', 'r', encoding='utf8') as file:
         except NotEmailError as exc:
             with open('registrations_bad.log', 'a', encoding='utf8') as bad:
                 bad.write(f'[Пользователь {line[:-1]}. Исключение {exc}]\n')
+# зачет! 
