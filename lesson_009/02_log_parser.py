@@ -55,11 +55,13 @@ class LogParser:
             n = 8
         else:
             n = 5
-        if line[1:n] in self.log_dict:
-            if line[-4] == 'N':
+        if line[-4] == 'N':
+            if line[1:n] in self.log_dict:
                 self.log_dict[line[1:n]] += 1
+            else:
+                self.log_dict[line[1:n]] = 1
         else:
-            self.log_dict[line[1:n]] = 1
+            self.log_dict[line[1:n]] = 0
 
     def fill_file(self):
         with open(self.file_out, 'w', encoding='utf8') as file:
