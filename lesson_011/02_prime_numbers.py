@@ -24,7 +24,8 @@ def get_prime_numbers(n):
 class PrimeNumbers:
 
     def __init__(self, n):
-        self.number_list = get_prime_numbers(n)
+        self.number_list = get_prime_numbers(n)  # TODO: а теперь попробуйте сделать это задание, генерируя очередное простое число на ходу,
+                                                 # TODO: не подсчитывая предварительно все числа.
         self.n = n
         self.i = 0
 

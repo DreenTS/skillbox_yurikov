@@ -78,3 +78,4 @@ try:
 except Exception as exc:
     print(f'[Error: {exc}]')
 
+# зачет! 
