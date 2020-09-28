@@ -4,15 +4,15 @@
 # Есть функция генерации списка простых чисел
 
 
-def get_prime_numbers(n):
-    prime_numbers = []
-    for number in range(2, n + 1):
-        for prime in prime_numbers:
-            if number % prime == 0:
-                break
-        else:
-            prime_numbers.append(number)
-    return prime_numbers
+# def get_prime_numbers(n):
+#     prime_numbers = []
+#     for number in range(2, n + 1):
+#         for prime in prime_numbers:
+#             if number % prime == 0:
+#                 break
+#         else:
+#             prime_numbers.append(number)
+#     return prime_numbers
 
 # Часть 1
 # На основе алгоритма get_prime_numbers создать класс итерируемых обьектов,
@@ -24,9 +24,9 @@ def get_prime_numbers(n):
 class PrimeNumbers:
 
     def __init__(self, n):
-        self.number_list = get_prime_numbers(n)  # TODO: а теперь попробуйте сделать это задание, генерируя очередное простое число на ходу,
-                                                 # TODO: не подсчитывая предварительно все числа.
+        self.number_list = []
         self.n = n
+        self.curr = 2
         self.i = 0
 
     def __iter__(self):
@@ -35,9 +35,22 @@ class PrimeNumbers:
 
     def __next__(self):
         self.i += 1
-        if self.i > len(self.number_list):
-            raise StopIteration
+        self.number_list.append(self.get_prime_numbers())
         return self.number_list[self.i - 1]
+
+    def get_prime_numbers(self):
+        for number in range(self.curr, self.n + 1):
+            for prime in self.number_list:
+                if number % prime == 0:
+                    break
+            else:
+                self.curr = number + 1
+                return number
+        else:
+            self.i = 0
+            self.number_list.clear()
+            self.curr = 2
+            raise StopIteration
 
 
 prime_number_iterator = PrimeNumbers(n=10000)
