@@ -64,18 +64,46 @@
 
 def prime_numbers_generator(n):
     prime_numbers = []
-    for number in range(2, n + 1):
+    for numb in range(2, n + 1):
         for prime in prime_numbers:
-            if number % prime == 0:
+            if numb % prime == 0:
                 break
         else:
-            prime_numbers.append(number)
-            yield number
+            """
+                Выводим только палиндромные простые числа.
+            """
+            if is_palindromic_number(numb):
+                prime_numbers.append(numb)
+                yield numb
 
 
+def is_lucky_number(n):
+    if n < 10:
+        return False
+    str_n = str(n)
+    half = len(str_n) // 2
+    return sum([int(i) for i in str_n[:half]]) == sum([int(i) for i in str_n[-half:]])
+
+
+def is_palindromic_number(n):
+    return str(n) == str(n)[::-1]
+
+
+def is_hilbert_number(n):
+    """
+        число Гильберта
+        n = 4 * i + 1
+        где i - натуральное число
+    """
+    return (n - 1) % 4 == 0
+
+
+print('Палиндромные числа:')
 for number in prime_numbers_generator(n=10000):
     print(number)
-
+print(f'Счастливое число 17562: {is_lucky_number(17562)}')
+print(f'Палиндромное число 1223221: {is_palindromic_number(1223221)}')
+print(f'Число Гильберта 9: {is_hilbert_number(9)}')
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
