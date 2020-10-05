@@ -73,4 +73,49 @@
 #     def run(self):
 #         <обработка данных>
 
-# TODO написать код в однопоточном/однопроцессорном стиле
+import os
+
+
+class CheckVolatility:
+
+    def __init__(self, dir_path, file_name):
+        self.dir_path = dir_path
+        self.file_name = file_name
+        self.maximum = 0
+        self.minimum = 0
+        self.half_sum = 0
+        self.volatility = 0
+
+    def run(self):
+        with open(os.path.join(self.dir_path, self.file_name), 'r', encoding='utf8') as file:
+            file.readline()
+            temp_list = []
+            for line in file:
+                temp_list.append(float(line.split(',')[2]))
+            self.maximum = max(temp_list)
+            self.minimum = min(temp_list)
+            self.half_sum = (self.maximum + self.minimum) / 2
+            self.volatility = ((self.maximum - self.minimum) / self.half_sum) * 100
+
+
+class_list = []
+zero_list = []
+for dirpath, dirnames, filenames in os.walk('trades'):
+    for filename in filenames:
+        temp_file = CheckVolatility(dir_path=dirpath, file_name=filename)
+        temp_file.run()
+        if temp_file.volatility != 0.0:
+            class_list.append([temp_file.file_name[:-4], temp_file.volatility])
+        else:
+            zero_list.append(temp_file.file_name[:-4])
+class_list.sort(key=lambda i: i[1])
+class_list.reverse()
+print('Максимальная волатильность:')
+for ticker in class_list[:3]:
+    print(f'{ticker[0]} - {round(ticker[1], 3)} %')
+print('\nМинимальная волатильность:')
+for ticker in class_list[-3:]:
+    print(f'{ticker[0]} - {round(ticker[1], 3)} %')
+print('\nНулевая волатильность:')
+zero_list.sort()
+print(','.join(zero_list))
