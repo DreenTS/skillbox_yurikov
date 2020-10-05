@@ -98,6 +98,7 @@ class CheckVolatility:
             self.volatility = ((self.maximum - self.minimum) / self.half_sum) * 100
 
 
+# TODO: попробуйте теперь весь этот код организовать в отдельный класс, который бы управлял инстансами CheckVolatility
 class_list = []
 zero_list = []
 for dirpath, dirnames, filenames in os.walk('trades'):
