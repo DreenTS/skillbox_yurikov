@@ -98,25 +98,37 @@ class CheckVolatility:
             self.volatility = ((self.maximum - self.minimum) / self.half_sum) * 100
 
 
-# TODO: попробуйте теперь весь этот код организовать в отдельный класс, который бы управлял инстансами CheckVolatility
-class_list = []
-zero_list = []
-for dirpath, dirnames, filenames in os.walk('trades'):
-    for filename in filenames:
-        temp_file = CheckVolatility(dir_path=dirpath, file_name=filename)
-        temp_file.run()
-        if temp_file.volatility != 0.0:
-            class_list.append([temp_file.file_name[:-4], temp_file.volatility])
-        else:
-            zero_list.append(temp_file.file_name[:-4])
-class_list.sort(key=lambda i: i[1])
-class_list.reverse()
-print('Максимальная волатильность:')
-for ticker in class_list[:3]:
-    print(f'{ticker[0]} - {round(ticker[1], 3)} %')
-print('\nМинимальная волатильность:')
-for ticker in class_list[-3:]:
-    print(f'{ticker[0]} - {round(ticker[1], 3)} %')
-print('\nНулевая волатильность:')
-zero_list.sort()
-print(','.join(zero_list))
+class Manager:
+
+    def __init__(self, files):
+        self.files = files
+        self.class_list = []
+        self.zero_list = []
+
+    def manage(self):
+        for dirpath, dirnames, filenames in os.walk(self.files):
+            for filename in filenames:
+                temp_file = CheckVolatility(dir_path=dirpath, file_name=filename)
+                temp_file.run()
+                if temp_file.volatility != 0.0:
+                    self.class_list.append([temp_file.file_name[:-4], temp_file.volatility])
+                else:
+                    self.zero_list.append(temp_file.file_name[:-4])
+
+    def show_volatility(self):
+        self.class_list.sort(key=lambda i: i[1])
+        self.class_list.reverse()
+        print('Максимальная волатильность:')
+        for ticker in self.class_list[:3]:
+            print(f'{ticker[0]} - {round(ticker[1], 3)} %')
+        print('\nМинимальная волатильность:')
+        for ticker in self.class_list[-3:]:
+            print(f'{ticker[0]} - {round(ticker[1], 3)} %')
+        print('\nНулевая волатильность:')
+        self.zero_list.sort()
+        print(','.join(self.zero_list))
+
+
+manager = Manager('trades')
+manager.manage()
+manager.show_volatility()
