@@ -132,4 +132,4 @@ class Manager:
 manager = Manager('trades')
 manager.manage()
 manager.show_volatility()
-# зачет! 
+# зачет!

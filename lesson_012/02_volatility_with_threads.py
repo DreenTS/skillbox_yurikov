@@ -46,7 +46,7 @@ class CheckVolatility(Thread):
             self.volatility = ((self.maximum - self.minimum) / self.half_sum) * 100
 
 
-class Manager(Thread):
+class Manager(Thread):  # TODO: это не обязательно запускать в отдельном треде
 
     def __init__(self, files, *args, **kwargs):
         super().__init__(*args, **kwargs)
