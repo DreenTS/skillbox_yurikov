@@ -19,7 +19,6 @@
 #
 
 import os
-import time
 from threading import Thread
 
 
@@ -46,7 +45,7 @@ class CheckVolatility(Thread):
             self.volatility = ((self.maximum - self.minimum) / self.half_sum) * 100
 
 
-class Manager(Thread):  # TODO: это не обязательно запускать в отдельном треде
+class Manager:
 
     def __init__(self, files, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -55,7 +54,7 @@ class Manager(Thread):  # TODO: это не обязательно запуск�
         self.zero_list = []
         self.threads = []
 
-    def run(self):
+    def manage(self):
         for dirpath, dirnames, filenames in os.walk(self.files):
             for filename in filenames:
                 self.threads.append(CheckVolatility(dir_path=dirpath, file_name=filename))
@@ -84,8 +83,5 @@ class Manager(Thread):  # TODO: это не обязательно запуск�
         print(','.join(self.zero_list))
 
 
-tt = time.time()
 manager = Manager('trades')
-manager.start()
-manager.join()
-print(time.time() - tt)
+manager.manage()
