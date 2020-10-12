@@ -85,3 +85,4 @@ class Manager:
 
 manager = Manager('trades')
 manager.manage()
+# зачет!
