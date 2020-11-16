@@ -3,6 +3,7 @@
 
 # User-specific stuff:
 .idea/
+chatbot/my_token.py
 
 
 ### Python template
