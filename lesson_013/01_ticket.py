@@ -14,9 +14,13 @@ import argparse as argp
 class TicketMaker:
 
     def __init__(self, template='images/ticket_template.png', font_path='ofont.ru_Schula.ttf'):
+        # TODO Имена файлов надо присваивать константам и использовать в основном коде только их.
+        #  Имена констант пишутся большими буквами. Располагают константы в начале модуля, сразу после
+        #  импортов сторонних модулей.
         self.template = template
         self.font_path = font_path
-        self.positions_dict = {
+        self.positions_dict = {  # TODO Есть смыл добавить ключи и для самих текстовых данных, чтобы не делать две
+                                 #  структуры данных - одну для координат, другую для текста
             0: {
                 'line': [(45, 140), (250, 140)],
                 'text': (45, 131)
@@ -74,13 +78,13 @@ if __name__ == '__main__':
 
     # EZ mode
 
-    maker.make_ticket(fio='Пупкин В.К.', from_='Новосибирск', to='Москва', date='25.11')
-    maker.make_ticket(fio='Зайцева А.А.', from_='Кемерово', to='Екатеринбург', date='27.11')
-    maker.make_ticket(fio='Кничевский Р.Д.', from_='Хабаровск', to='Омск', date='26.11')
+    # maker.make_ticket(fio='Пупкин В.К.', from_='Новосибирск', to='Москва', date='25.11')
+    # maker.make_ticket(fio='Зайцева А.А.', from_='Кемерово', to='Екатеринбург', date='27.11')
+    # maker.make_ticket(fio='Кничевский Р.Д.', from_='Хабаровск', to='Омск', date='26.11')
 
     # HARD mode
 
-    # from_parser(maker=maker)
+    from_parser(maker=maker)
 
 # Усложненное задание (делать по желанию).
 # Написать консольный скрипт c помощью встроенного python-модуля argparse.

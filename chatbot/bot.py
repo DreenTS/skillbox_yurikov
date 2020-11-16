@@ -43,3 +43,5 @@ if __name__ == '__main__':
     group_id = 200346432
     bot = Bot(group_id=group_id, token=TOKEN)
     bot.run()
+
+# зачет!
