@@ -10,53 +10,63 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 import argparse as argp
 
+TEMPLATE_ORIGIN = 'images/ticket_template.png'
+FONT_PATH_ORIGIN = 'ofont.ru_Schula.ttf'
 
-class TicketMaker:
 
-    def __init__(self, template='images/ticket_template.png', font_path='ofont.ru_Schula.ttf'):
-        # TODO Имена файлов надо присваивать константам и использовать в основном коде только их.
-        #  Имена констант пишутся большими буквами. Располагают константы в начале модуля, сразу после
-        #  импортов сторонних модулей.
-        self.template = template
-        self.font_path = font_path
-        self.positions_dict = {  # TODO Есть смыл добавить ключи и для самих текстовых данных, чтобы не делать две
-                                 #  структуры данных - одну для координат, другую для текста
+class Ticket:
+
+    def __init__(self, fio, from_, to, date):
+        self.data_dict = {
             0: {
                 'line': [(45, 140), (250, 140)],
-                'text': (45, 131)
+                'text': (45, 131),
+                'content': fio
             },
             1: {
                 'line': [(45, 210), (150, 210)],
-                'text': (45, 201)
+                'text': (45, 201),
+                'content': from_
             },
             2: {
                 'line': [(45, 275), (150, 275)],
-                'text': (45, 266)
+                'text': (45, 266),
+                'content': to
             },
             3: {
                 'line': [(287, 275), (320, 275)],
-                'text': (287, 266)
+                'text': (287, 266),
+                'content': date
             },
         }
 
-    def make_ticket(self, fio='Иванов И.И.', from_='ЗЕМЛЯ', to='ЛУНА', date='09.12', save_to=None):
-        img = Image.open(self.template)
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(self.font_path, size=15)
-        list_of_content = [fio, from_, to, date]
-        for ind, content in enumerate(list_of_content):
-            draw.line(xy=self.positions_dict[ind]['line'], fill=ImageColor.colormap['white'], width=3)
-            draw.text(xy=self.positions_dict[ind]['text'], text=content, font=font, fill=ImageColor.colormap['black'])
-        if save_to is None:
-            img.save(f'{date} {fio}.png')
-            print(f'Ticket saved as "{date} {fio}.png"')
-        else:
-            img.save(f'{save_to}')
-            print(f'Ticket saved as "{save_to}"')
+
+class TicketMaker:
+
+    def __init__(self, ticket_list, template=TEMPLATE_ORIGIN, font_path=FONT_PATH_ORIGIN, save_to=None):
+        self.template = template
+        self.font_path = font_path
+        self.save_to = save_to
+        self.ticket_list = ticket_list
+
+    def make_tickets(self):
+        for ticket in self.ticket_list:
+            img = Image.open(self.template)
+            draw = ImageDraw.Draw(img)
+            font = ImageFont.truetype(self.font_path, size=15)
+            for i in range(4):
+                draw.line(xy=ticket.data_dict[i]['line'], fill=ImageColor.colormap['white'], width=3)
+                draw.text(xy=ticket.data_dict[i]['text'], text=ticket.data_dict[i]['content'], font=font,
+                          fill=ImageColor.colormap['black'])
+            if self.save_to is None:
+                img.save(f'{ticket.data_dict[3]["content"]} {ticket.data_dict[0]["content"]}.png')
+                print(f'Ticket saved as "{ticket.data_dict[3]["content"]} {ticket.data_dict[0]["content"]}.png"')
+            else:
+                img.save(f'{self.save_to}')
+                print(f'Ticket saved as "{self.save_to}"')
 
 
 def from_parser(maker):
-
     """
     example for terminal:
         cd C:\...\python_base\lesson_013
@@ -70,21 +80,23 @@ def from_parser(maker):
     parser.add_argument('--date', action='store', dest='date')
     parser.add_argument('--save_to', action='store', dest='save_to')
     args = vars(parser.parse_args())
-    maker.make_ticket(fio=args['fio'], from_=args['from_'], to=args['to'], date=args['date'], save_to=args['save_to'])
+    maker.ticket_list.append(Ticket(args['fio'], args['from_'], args['to'], args['date']))
+    maker.save_to = args['save_to']
+    maker.make_tickets()
 
 
 if __name__ == '__main__':
-    maker = TicketMaker()
-
     # EZ mode
-
-    # maker.make_ticket(fio='Пупкин В.К.', from_='Новосибирск', to='Москва', date='25.11')
-    # maker.make_ticket(fio='Зайцева А.А.', from_='Кемерово', to='Екатеринбург', date='27.11')
-    # maker.make_ticket(fio='Кничевский Р.Д.', from_='Хабаровск', to='Омск', date='26.11')
+    tickets = [Ticket(fio='Пупкин В.К.', from_='Новосибирск', to='Москва', date='25.11'),
+               Ticket(fio='Зайцева А.А.', from_='Кемерово', to='Екатеринбург', date='27.11'),
+               Ticket(fio='Кничевский Р.Д.', from_='Хабаровск', to='Омск', date='26.11')]
+    maker = TicketMaker(ticket_list=tickets)
+    maker.make_tickets()
 
     # HARD mode
-
-    from_parser(maker=maker)
+    # tickets = []
+    # maker = TicketMaker(ticket_list=tickets)
+    # from_parser(maker=maker)
 
 # Усложненное задание (делать по желанию).
 # Написать консольный скрипт c помощью встроенного python-модуля argparse.
