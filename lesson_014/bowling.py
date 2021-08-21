@@ -1,3 +1,21 @@
+def data_check(data='--------------------'):
+    default_set = set('-123456789/X')
+    if len(data) != 20:
+        raise ValueError('количество фреймов должно быть равно 10')
+    elif not set(data) <= default_set:
+        raise ValueError('неправильный набор символов')
+
+
+def frames_check(frame_list=None):
+    if frame_list is None:
+        frame_list = ['--'] * 10
+    for f in frame_list:
+        if f.isdigit() and sum(map(int, f)) >= 10:
+            raise ValueError(f'ошибка в записи фрейма "{f}"; сумма должна быть <= 9')
+        elif '/' in f and f[0] in ['-', '/']:
+            raise ValueError(f'ошибка в записи фрейма "{f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли')
+
+
 def get_score(game_result='--------------------'):
     if not isinstance(game_result, str):
         raise TypeError('параметр game_result должен иметь тип "str"')
@@ -6,3 +24,7 @@ def get_score(game_result='--------------------'):
     # Для удобства подсчёта очков: заменяем фрейм страйка 'X' на фрейм '-X'
     result = game_result.upper().replace('Х', 'X').replace('X', '-X')
 
+    # Проверка данных на валидность
+    data_check(data=result)
+    frames = [result[i:i + 2] for i in range(0, len(result), 2)]
+    frames_check(frame_list=frames)
