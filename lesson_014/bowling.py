@@ -28,3 +28,23 @@ def get_score(game_result='--------------------'):
     data_check(data=result)
     frames = [result[i:i + 2] for i in range(0, len(result), 2)]
     frames_check(frame_list=frames)
+
+    # Подсчёт очков
+    total_scores = 0
+    for frame in frames:
+        if frame == '-X':
+            total_scores += 20
+        elif '/' in frame:
+            total_scores += 15
+        else:
+            total_scores += sum(map(int, frame.replace('-', '0')))
+    return total_scores
+
+
+if __name__ == '__main__':
+    try:
+        game_result = '8/549-XX5/53629/9/'
+        scores = get_score(game_result=game_result)
+        print(f'Количество очков для результата "{game_result}" - {scores}.')
+    except Exception as exc:
+        print(f'{exc.__class__.__name__}: {exc}')
