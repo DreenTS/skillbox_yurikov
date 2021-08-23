@@ -1,24 +1,24 @@
-def data_check(data='--------------------'):
+def data_check(data):
     default_set = set('-123456789/X')
     if len(data) != 20:
-        raise ValueError('количество фреймов должно быть равно 10')
+        raise ValueError('Количество фреймов должно быть равно 10')
     elif not set(data) <= default_set:
-        raise ValueError('неправильный набор символов')
+        raise ValueError('Неправильный набор символов')
 
 
-def frames_check(frame_list=None):
-    if frame_list is None:
-        frame_list = ['--'] * 10
+def frames_check(frame_list):
     for f in frame_list:
         if f.isdigit() and sum(map(int, f)) >= 10:
-            raise ValueError(f'ошибка в записи фрейма "{f}"; сумма должна быть <= 9')
+            raise ValueError(f'Ошибка в записи фрейма "{f}"; сумма должна быть <= 9')
         elif '/' in f and f[0] in ['-', '/']:
-            raise ValueError(f'ошибка в записи фрейма "{f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли')
+            raise ValueError(f'Ошибка в записи фрейма "{f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли')
 
 
-def get_score(game_result='--------------------'):
-    if not isinstance(game_result, str):
-        raise TypeError('параметр game_result должен иметь тип "str"')
+def get_score(game_result=None):
+    if game_result is None:
+        raise ValueError('Передано пустое значение дя подсчёта!')
+    elif not isinstance(game_result, str):
+        raise TypeError('Параметр game_result должен иметь тип "str"')
 
     # Замена русской буквы на латинскую (проверк на дурака)
     # Для удобства подсчёта очков: заменяем фрейм страйка 'X' на фрейм '-X'

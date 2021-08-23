@@ -18,7 +18,7 @@ class ScoreTest(unittest.TestCase):
 
     def test_wrong_symbols(self):
         with self.assertRaises(ValueError):
-            bowling.get_score(game_result='8/5D9-XЯ5/50629/9/')
+            bowling.get_score(game_result='8/5D9-X1Я5/50629/9/')
 
     def test_wrong_type(self):
         with self.assertRaises(TypeError):
