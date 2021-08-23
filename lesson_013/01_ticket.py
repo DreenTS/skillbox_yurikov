@@ -70,7 +70,7 @@ def from_parser(maker):
     """
     example for terminal:
         cd C:\...\python_base\lesson_013
-        python 01_ticket.py --fio "Иванов И.И." --from Москва --to Саратов --date 01.02 --save_to "01.02 Иванов И.И..png"
+        python 01_ticket.py --fio "Швалов С.Я." --from "Mосква" --to "Саратов" --date 01.02 --save_to "01.02 Швалов С.Я..png"
     """
 
     parser = argp.ArgumentParser(description='Ticket Maker')

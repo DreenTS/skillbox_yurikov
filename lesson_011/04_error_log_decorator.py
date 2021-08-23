@@ -49,7 +49,7 @@ def check_line(*args):
     if not name.isalpha():
         raise ValueError("it's not a name")
     if '@' not in email or '.' not in email:
-        raise ValueError("it's not a email")
+        raise ValueError("it's not an email")
     if not 10 <= int(age) <= 99:
         raise ValueError('Age not in 10..99 range')
 

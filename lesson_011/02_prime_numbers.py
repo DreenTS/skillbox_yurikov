@@ -98,7 +98,7 @@ def is_hilbert_number(n):
     return (n - 1) % 4 == 0
 
 
-print('Палиндромные числа:')
+print('Простые числа:')
 for number in prime_numbers_generator(n=10000):
     print(number)
 print(f'Счастливое число 17562: {is_lucky_number(17562)}')
