@@ -1,3 +1,6 @@
+import state_handler
+
+
 def data_check(data):
     default_set = set('-123456789/X')
     if len(data) != 20:
@@ -39,6 +42,11 @@ def get_score(game_result=None):
         else:
             total_scores += sum(map(int, frame.replace('-', '0')))
     return total_scores
+
+    # Подсчёт очков для паттерна Состояние
+    # handler = state_handler.ScoreHandler(frames=frames)
+    # handler.count_score()
+    # return handler.total_score
 
 
 if __name__ == '__main__':
