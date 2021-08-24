@@ -1,28 +1,63 @@
 import state_handler
 
 
+class FrameLengthError(Exception):
+
+    def __str__(self):
+        return 'Количество фреймов должно быть равно 10'
+
+
+class WrongCharSetError(Exception):
+
+    def __str__(self):
+        return 'Неправильный набор символов'
+
+
+class WrongTypeError(Exception):
+
+    def __str__(self):
+        return 'Параметр game_result должен иметь тип "str"'
+
+
+class FrameSumError(Exception):
+
+    def __init__(self, f):
+        self.f = f
+
+    def __str__(self):
+        return f'Ошибка в записи фрейма "{self.f}"; сумма должна быть <= 9'
+
+
+class SpareError(Exception):
+
+    def __init__(self, f):
+        self.f = f
+
+    def __str__(self):
+        return f'Ошибка в записи фрейма "{self.f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли'
+
+
 def data_check(data):
     default_set = set('-123456789/X')
     if len(data) != 20:
-        # TODO создайте кастомные классы для каждого вида ошибки, тогда и тесты будут более конкретные
-        raise ValueError('Количество фреймов должно быть равно 10')
+        raise FrameLengthError
     elif not set(data) <= default_set:
-        raise ValueError('Неправильный набор символов')
+        raise WrongCharSetError
 
 
 def frames_check(frame_list):
     for f in frame_list:
         if f.isdigit() and sum(map(int, f)) >= 10:
-            raise ValueError(f'Ошибка в записи фрейма "{f}"; сумма должна быть <= 9')
+            raise FrameSumError(f=f)
         elif '/' in f and f[0] in ['-', '/']:
-            raise ValueError(f'Ошибка в записи фрейма "{f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли')
+            raise SpareError(f=f)
 
 
 def get_score(game_result=None):
     if game_result is None:
         raise ValueError('Передано пустое значение дя подсчёта!')
     elif not isinstance(game_result, str):
-        raise TypeError('Параметр game_result должен иметь тип "str"')
+        raise WrongTypeError
 
     # Замена русской буквы на латинскую (проверк на дурака)
     # Для удобства подсчёта очков: заменяем фрейм страйка 'X' на фрейм '-X'
