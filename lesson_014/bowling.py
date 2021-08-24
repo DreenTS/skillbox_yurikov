@@ -69,35 +69,20 @@ def get_score(game_result=None):
     frames_check(frame_list=frames)
 
     # Подсчёт очков
-    total_scores = 0
-    for frame in frames:
-        if frame == '-X':
-            total_scores += 20
-        elif '/' in frame:
-            total_scores += 15
-        else:
-            total_scores += sum(map(int, frame.replace('-', '0')))
-    return total_scores
+    # total_scores = 0
+    # for frame in frames:
+    #     if frame == '-X':
+    #         total_scores += 20
+    #     elif '/' in frame:
+    #         total_scores += 15
+    #     else:
+    #         total_scores += sum(map(int, frame.replace('-', '0')))
+    # return total_scores
 
     # Подсчёт очков для паттерна Состояние
-    # handler = state_handler.ScoreHandler(frames=frames)
-    # handler.count_score()
-    # return handler.total_score
-
-# TODO Для реализации на паттерне "Состояние" нужно сделать классы: "ПервыйБросок", "ВторойБросок" (это два стейта -
-#  состояния) .
-#
-# Стейт должен брать как параметр следующий символ из входной строки и возвращать скоринг и следующий стейт.
-# Общий алгоритм:
-#
-# текущий_стейт, скор = ПервыйБросок(), 0
-# цикл для каждого символа из строки результата:
-#     текущий_стейт, очков = текущий_стейт.рассчитать(символ)
-#     скор += очков
-#
-# скор - общее количество очков, то есть результат
-#
-# Можно ещё добавить класс Менеджера и поместить в него код инициализации первого броска и тела цикла.
+    handler = state_handler.ScoreHandler(result=result)
+    handler.count_score()
+    return handler.total_score
 
 
 if __name__ == '__main__':
