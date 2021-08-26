@@ -24,6 +24,8 @@ class FileHandler:
                     self.rejected[tour][player] = [game_result, exc]
                     self.tours[tour][player].append('ДИСКВАЛИФИЦИРОВАН')
             self.tours[tour]['winner'] = winner
+        self._rejected_to_file()
+        self._save_to_file(self.file_out)
 
     def _make_file_dict(self, file_name):
         curr_tour, splitted_line = 0, ''
@@ -37,6 +39,26 @@ class FileHandler:
                     self.tours[f'### Tour {curr_tour}'][splitted_line[0]] = [splitted_line[1][:-1], ]
                 else:
                     file.readline()
+
+    def _rejected_to_file(self):
+        with open('rejected.txt', 'w', encoding='utf-8') as file:
+            file.write('Список дисквалифицированных.\n')
+            for tour, players in self.rejected.items():
+                file.write(f'{tour}\n')
+                for player, result in players.items():
+                    file.write(f'{player}\t{result[0][0]}\t{result[1]}\n')
+                file.write('\n')
+
+    def _save_to_file(self, file_name):
+        with open(file_name, 'w', encoding='utf-8') as file:
+            for tour, players in self.tours.items():
+                file.write(f'{tour}\n')
+                for player, result in players.items():
+                    if player != 'winner':
+                        file.write(f'{player}\t{result[0]}\t{result[1]}\n')
+                    else:
+                        file.write(f'Winner is \t{result}\n')
+                file.write('\n')
 
 
 if __name__ == '__main__':
