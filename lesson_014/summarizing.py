@@ -42,7 +42,7 @@ class FileHandler:
 
     def _rejected_to_file(self):
         with open('rejected.txt', 'w', encoding='utf-8') as file:
-            file.write('Список дисквалифицированных.\n')
+            file.write('Список дисквалифицированных.\n\n')
             for tour, players in self.rejected.items():
                 file.write(f'{tour}\n')
                 for player, result in players.items():
