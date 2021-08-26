@@ -47,7 +47,7 @@ def data_check(data):
 
 def frames_check(frame_list):
     for f in frame_list:
-        if f.isdigit() and sum(map(int, f)) >= 10:
+        if f.isdigit() and sum(map(int, f)) > 10:
             raise FrameSumError(f=f)
         elif '/' in f and f[0] in ['-', '/']:
             raise SpareError(f=f)
