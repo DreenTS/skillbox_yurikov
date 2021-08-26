@@ -13,12 +13,17 @@ class FileHandler:
     def total_count(self):
         self._make_file_dict(self.file_in)
         for tour, players in self.tours.items():
+            max_score, winner = 0, 'winner'
             for player, game_result in players.items():
                 try:
                     self.tours[tour][player].append(bowling.get_score(game_result=game_result[0]))
+                    if self.tours[tour][player][1] > max_score:
+                        max_score = self.tours[tour][player][1]
+                        winner = player
                 except Exception as exc:
                     self.rejected[tour][player] = [game_result, exc]
                     self.tours[tour][player].append('ДИСКВАЛИФИЦИРОВАН')
+            self.tours[tour]['winner'] = winner
 
     def _make_file_dict(self, file_name):
         curr_tour, splitted_line = 0, ''
@@ -34,5 +39,9 @@ class FileHandler:
                     file.readline()
 
 
-handler = FileHandler(file_in_name='tournament.txt', file_out_name='tournament_result.txt')
-handler.total_count()
+if __name__ == '__main__':
+    try:
+        handler = FileHandler(file_in_name='tournament.txt', file_out_name='tournament_result.txt')
+        handler.total_count()
+    except Exception as exc:
+        print(f'{exc.__class__.__name__}: {exc}')
