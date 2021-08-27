@@ -42,6 +42,7 @@ class FileHandler:
 
     def _rejected_to_file(self):
         with open('rejected.txt', 'w', encoding='utf-8') as file:
+            # TODO Хардкодить данные это плохая практика - создайте константу для имени файла
             file.write('Список дисквалифицированных.\n\n')
             for tour, players in self.rejected.items():
                 file.write(f'{tour}\n')
