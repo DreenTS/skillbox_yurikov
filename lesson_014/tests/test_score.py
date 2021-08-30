@@ -5,11 +5,11 @@ import bowling
 class ScoreTest(unittest.TestCase):
 
     def test_normal(self):
-        result = bowling.get_score(game_result='8/549-XX5/53629/9/')
+        result = bowling.get_score(game_result='8/549-XX5/53629/9/', mode='private')
         self.assertEqual(result, 134)
         result = bowling.get_score(game_result='1163718/72627/X8-7/')
         self.assertEqual(result, 109)
-        result = bowling.get_score(game_result='x1235---616-9xx-7')
+        result = bowling.get_score(game_result='x1235---616-9xx-7', mode='pRiVaTe')
         self.assertEqual(result, 100)
 
     def test_not_enough_len(self):
@@ -33,6 +33,10 @@ class ScoreTest(unittest.TestCase):
             bowling.get_score(game_result='8/549-XX-/53629/9/')
         with self.assertRaises(bowling.SpareError):
             bowling.get_score(game_result='/8549-XX5/53629/9/')
+
+    def test_wrong_mode(self):
+        with self.assertRaises(bowling.WrongModeError):
+            bowling.get_score(game_result='8/549-XX5/53629/9/', mode='publik')
 
 
 if __name__ == '__main__':

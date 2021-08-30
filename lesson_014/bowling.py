@@ -1,5 +1,10 @@
 import state_handler
 
+RULES = {
+    'private': 'внутреннего',
+    'public': 'внешнего'
+}
+
 
 class FrameLengthError(Exception):
 
@@ -37,6 +42,12 @@ class SpareError(Exception):
         return f'Ошибка в записи фрейма "{self.f}"; "/" - spare, указывает на то, что выбиты оставшиеся кегли'
 
 
+class WrongModeError(Exception):
+
+    def __str__(self):
+        return 'Задан неверный режим. Возможные режимы: "private" (внутренний рынок), "public" (внешний рынок).'
+
+
 def data_check(data):
     default_set = set('-123456789/X')
     if len(data) != 20:
@@ -53,11 +64,13 @@ def frames_check(frame_list):
             raise SpareError(f=f)
 
 
-def get_score(game_result=None):
+def get_score(game_result=None, mode='private'):
     if game_result is None:
         raise ValueError('Передано пустое значение дя подсчёта!')
     elif not isinstance(game_result, str):
         raise WrongTypeError
+    elif mode.lower() not in RULES.keys():
+        raise WrongModeError
 
     # Замена русской буквы на латинскую (проверк на дурака)
     # Для удобства подсчёта очков: заменяем фрейм страйка 'X' на фрейм '-X'
@@ -68,19 +81,10 @@ def get_score(game_result=None):
     frames = [result[i:i + 2] for i in range(0, len(result), 2)]
     frames_check(frame_list=frames)
 
-    # Подсчёт очков
-    # total_scores = 0
-    # for frame in frames:
-    #     if frame == '-X':
-    #         total_scores += 20
-    #     elif '/' in frame:
-    #         total_scores += 15
-    #     else:
-    #         total_scores += sum(map(int, frame.replace('-', '0')))
-    # return total_scores
+    # Оставил подсчёт только на Состояниях, с классами проще работать
 
     # Подсчёт очков для паттерна Состояние
-    handler = state_handler.ScoreHandler(result=result)
+    handler = state_handler.ScoreHandler(result=result, mode=mode.lower())
     handler.count_score()
     return handler.total_score
 
@@ -88,7 +92,9 @@ def get_score(game_result=None):
 if __name__ == '__main__':
     try:
         game_result = '8/549-XX5/53629/9/'
-        scores = get_score(game_result=game_result)
-        print(f'Количество очков для результата "{game_result}" - {scores}.')
+        mode = 'public'
+        scores = get_score(game_result=game_result, mode=mode)
+        print(f'Количество очков для результата "{game_result}" - {scores}.'
+              f'Подсчёт очков был произведён согласно правилам {RULES[mode]} рынка.')
     except Exception as exc:
         print(f'{exc.__class__.__name__}: {exc}')
