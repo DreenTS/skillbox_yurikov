@@ -9,6 +9,7 @@ class FileHandler:
         self.file_out = file_out_name
         self.tours = defaultdict(dict)
         self.rejected = defaultdict(dict)
+        self.rejected_file_name = 'rejected.txt'
 
     def total_count(self):
         self._make_file_dict(self.file_in)
@@ -41,8 +42,7 @@ class FileHandler:
                     file.readline()
 
     def _rejected_to_file(self):
-        with open('rejected.txt', 'w', encoding='utf-8') as file:
-            # TODO Хардкодить данные это плохая практика - создайте константу для имени файла
+        with open(self.rejected_file_name, 'w', encoding='utf-8') as file:
             file.write('Список дисквалифицированных.\n\n')
             for tour, players in self.rejected.items():
                 file.write(f'{tour}\n')
