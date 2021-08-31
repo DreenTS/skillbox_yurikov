@@ -11,6 +11,12 @@ class ScoreTest(unittest.TestCase):
         self.assertEqual(result, 109)
         result = bowling.get_score(game_result='x1235---616-9xx-7', mode='pRiVaTe')
         self.assertEqual(result, 100)
+        result = bowling.get_score(game_result='8/549-XX5/53629/9/', mode='public')
+        self.assertEqual(result, 138)
+        result = bowling.get_score(game_result='1163718/72627/X807/', mode='PUBLIC')
+        self.assertEqual(result, 99)
+        result = bowling.get_score(game_result='x1235---616-9xx-7', mode='PUBlic')
+        self.assertEqual(result, 90)
 
     def test_not_enough_len(self):
         with self.assertRaises(bowling.FrameLengthError):

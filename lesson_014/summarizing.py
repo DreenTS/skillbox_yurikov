@@ -4,9 +4,10 @@ import bowling
 
 class FileHandler:
 
-    def __init__(self, file_in_name, file_out_name):
+    def __init__(self, file_in_name, file_out_name, mode='private'):
         self.file_in = file_in_name
         self.file_out = file_out_name
+        self.mode = mode
         self.tours = defaultdict(dict)
         self.rejected = defaultdict(dict)
         self.rejected_file_name = 'rejected.txt'
@@ -17,7 +18,7 @@ class FileHandler:
             max_score, winner = 0, 'winner'
             for player, game_result in players.items():
                 try:
-                    self.tours[tour][player].append(bowling.get_score(game_result=game_result[0]))
+                    self.tours[tour][player].append(bowling.get_score(game_result=game_result[0], mode=self.mode))
                     if self.tours[tour][player][1] > max_score:
                         max_score = self.tours[tour][player][1]
                         winner = player

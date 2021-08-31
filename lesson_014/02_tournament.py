@@ -34,8 +34,9 @@ def from_parser(handler):
     parser = argp.ArgumentParser(description='File handler for bowling tournament table')
     parser.add_argument('--input', action='store', dest='file_in_name')
     parser.add_argument('--output', action='store', dest='file_out_name')
+    parser.add_argument('--mode', action='store', dest='mode')
     args = vars(parser.parse_args())
-    handler(file_in_name=args['file_in_name'], file_out_name=args['file_out_name']).total_count()
+    handler(file_in_name=args['file_in_name'], file_out_name=args['file_out_name'], mode=args['mode']).total_count()
 
 
 if __name__ == '__main__':
