@@ -9,52 +9,64 @@ class State(ABC):
         self.is_strike = is_strike
 
     @abstractmethod
-    def private_count(self, char):
-        pass
-
-    @abstractmethod
-    def public_count(self, char):
+    def count(self, result):
         pass
 
 
-class FirstThrow(State):
+class PrivateFirstThrow(State):
 
-    def private_count(self, char):
-        self.res = int(char)
-        return SecondThrow(), self.res
-
-    def public_count(self, char):
-        if self.is_spare:
-            self.is_spare = False
-            self.res = int(char)
-            return self, self.res
-        if self.is_strike:
-            self.is_strike = False
-        self.res = int(char)
-        return SecondThrow(is_spare=self.is_spare, is_strike=self.is_strike), self.res
+    def count(self, result):
+        self.res = int(result)
+        return self.res
 
 
-class SecondThrow(State):
+class PrivateSecondThrow(State):
 
-    def private_count(self, char):
-        if char == 'X':
+    def count(self, result):
+        if result == 'X':
             self.res = 20
-        elif char == '/':
+        elif result == '/':
             self.res = 15
         else:
-            self.res = int(char)
-        return FirstThrow(), self.res
+            self.res = int(result)
+        return self.res
 
-    def public_count(self, char):
-        if char == '/':
-            self.res = 10
-            self.is_spare = True
-        elif char == 'X':
-            self.res = 10
-            self.is_strike = True
+
+class PublicFirstThrow(State):
+
+    def count(self, result):
+        if self.is_strike:
+            self.is_strike = False
+            local_state = PublicSecondThrow()
+            local_state.count(result=result[1])
+            if local_state.is_spare:
+                self.res = local_state.res
+                return self.res
+            elif local_state.is_strike:
+                self.res = local_state.res + self.count(result=result[2])
+                return self.res
+            else:
+                self.res = int(result[0]) + local_state.res
+                return self.res
         else:
-            self.res = int(char)
-        return FirstThrow(is_spare=self.is_spare, is_strike=self.is_strike), self.res
+            self.res = int(result)
+            return self.res
+
+
+class PublicSecondThrow(State):
+
+    def count(self, result):
+        if result == '/':
+            self.is_spare = True
+            self.res = 10
+            return self.res
+        elif result == 'X':
+            self.is_strike = True
+            self.res = 10
+            return self.res
+        else:
+            self.res = int(result)
+            return self.res
 
 
 class ScoreHandler:
@@ -63,42 +75,50 @@ class ScoreHandler:
         self.result = result
         self.mode = mode
         self.state = None
+        self.states_dict = {
+            'private': (PrivateFirstThrow, PrivateSecondThrow),
+            'public': (PublicFirstThrow, PublicSecondThrow)
+        }
         self.total_score = 0
 
     def count_score(self):
-        self.state, prev, curr, local_state = FirstThrow(), 0, 0, None
+        prev, curr, local_state = 0, 0, None
         if self.mode == 'private':
+            self._switch_state()
             for char in self.result:
-                self.state, curr = self.state.private_count(char=char)
+                curr = self.state.count(result=char)
                 if curr in [15, 20]:
                     self.total_score += curr - prev
                 else:
                     self.total_score += curr
+                self._switch_state()
                 prev = curr
         else:
+            self._switch_state()
             for i in range(len(self.result)):
-                if i == 18 and ('X' in self.result[i:i+2] or '/' in self.result[i:i + 2]):
+                if i == 18 and ('X' in self.result[i:i + 2] or '/' in self.result[i:i + 2]):
                     self.total_score += 10
                     break
                 else:
-                    self.state, curr = self.state.public_count(char=self.result[i])
+                    curr = self.state.count(result=self.result[i])
                     if self.state.is_spare:
-                        self.state, curr = self.state.public_count(char=self.result[i + 1])
-                        self.total_score += curr + 10 - prev
-                        self.state.res = 0
+                        self._switch_state()
+                        self.total_score += curr - prev + self.state.count(result=self.result[i + 1])
                     elif self.state.is_strike:
-                        local_state = self.state
+                        self._switch_state()
+                        self.state.is_strike = True
+                        self.total_score += curr - prev
+                        curr = self.state.count(result=self.result[i + 1: i + 4])
                         self.total_score += curr
-                        self.state, prev = self.state.public_count(char=self.result[i + 1])
-                        self.state, curr = self.state.public_count(char=self.result[i + 2])
-                        if self.state.is_spare or self.state.is_strike:
-                            self.total_score += 10
-                            if self.state.is_strike:
-                                self.state, curr = self.state.public_count(char=self.result[i + 3])
-                                self.total_score += curr
-                        else:
-                            self.total_score += prev + curr
-                        self.state = local_state
                     else:
                         self.total_score += curr
-                        prev = curr
+                        self._switch_state()
+                    prev = curr
+
+    def _switch_state(self):
+        if self.state is None:
+            self.state = self.states_dict[self.mode][0]()
+        elif isinstance(self.state, self.states_dict[self.mode][0]):
+            self.state = self.states_dict[self.mode][1]()
+        else:
+            self.state = self.states_dict[self.mode][0]()
