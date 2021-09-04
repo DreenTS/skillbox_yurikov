@@ -83,6 +83,7 @@ class ScoreHandler:
 
     def count_score(self):
         prev, curr, local_state = 0, 0, None
+        # TODO self._switch_state повторяется в обоих ветках условного оператора, вызовите его один раз тут
         if self.mode == 'private':
             self._switch_state()
             for char in self.result:
@@ -91,7 +92,7 @@ class ScoreHandler:
                     self.total_score += curr - prev
                 else:
                     self.total_score += curr
-                self._switch_state()
+                self._switch_state()  # TODO кроме этого вызова, этот остаётся
                 prev = curr
         else:
             self._switch_state()
@@ -101,6 +102,7 @@ class ScoreHandler:
                     break
                 else:
                     curr = self.state.count(result=self.result[i])
+                    # TODO аналогично и ниже - повторяется вызов того же метода в начале каждой ветки
                     if self.state.is_spare:
                         self._switch_state()
                         self.total_score += curr - prev + self.state.count(result=self.result[i + 1])
