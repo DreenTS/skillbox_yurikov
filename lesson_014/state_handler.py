@@ -74,53 +74,46 @@ class ScoreHandler:
     def __init__(self, result, mode):
         self.result = result
         self.mode = mode
-        self.state = None
         self.states_dict = {
             'private': (PrivateFirstThrow, PrivateSecondThrow),
             'public': (PublicFirstThrow, PublicSecondThrow)
         }
+        self.state = self.states_dict[self.mode][0]()
         self.total_score = 0
 
     def count_score(self):
         prev, curr, local_state = 0, 0, None
-        # TODO self._switch_state повторяется в обоих ветках условного оператора, вызовите его один раз тут
         if self.mode == 'private':
-            self._switch_state()
             for char in self.result:
                 curr = self.state.count(result=char)
                 if curr in [15, 20]:
                     self.total_score += curr - prev
                 else:
                     self.total_score += curr
-                self._switch_state()  # TODO кроме этого вызова, этот остаётся
+                self._switch_state()
                 prev = curr
         else:
-            self._switch_state()
             for i in range(len(self.result)):
                 if i == 18 and ('X' in self.result[i:i + 2] or '/' in self.result[i:i + 2]):
                     self.total_score += 10
                     break
                 else:
                     curr = self.state.count(result=self.result[i])
-                    # TODO аналогично и ниже - повторяется вызов того же метода в начале каждой ветки
+                    self._switch_state()
                     if self.state.is_spare:
-                        self._switch_state()
                         self.total_score += curr - prev + self.state.count(result=self.result[i + 1])
+                        self.state.is_spare = False
                     elif self.state.is_strike:
-                        self._switch_state()
-                        self.state.is_strike = True
                         self.total_score += curr - prev
                         curr = self.state.count(result=self.result[i + 1: i + 4])
                         self.total_score += curr
                     else:
                         self.total_score += curr
-                        self._switch_state()
                     prev = curr
 
     def _switch_state(self):
-        if self.state is None:
-            self.state = self.states_dict[self.mode][0]()
-        elif isinstance(self.state, self.states_dict[self.mode][0]):
-            self.state = self.states_dict[self.mode][1]()
+        is_spare, is_strike = self.state.is_spare, self.state.is_strike
+        if isinstance(self.state, self.states_dict[self.mode][0]):
+            self.state = self.states_dict[self.mode][1](is_spare=is_spare, is_strike=is_strike)
         else:
-            self.state = self.states_dict[self.mode][0]()
+            self.state = self.states_dict[self.mode][0](is_spare=is_spare, is_strike=is_strike)
