@@ -92,11 +92,28 @@
 #
 # и так далее...
 
+import datetime
+import json
+from decimal import Decimal, getcontext
 
-remaining_time = '123456.0987654321'
-# если изначально не писать число в виде строки - теряется точность!
-field_names = ['current_location', 'current_experience', 'current_date']
+from dungeon_master import DungeonMaster, Player
 
-# TODO тут ваш код
+if __name__ == '__main__':
+    field_names = ['current_location', 'current_experience', 'current_date']
 
-# Учитывая время и опыт, не забывайте о точности вычислений!
+    # если изначально не писать число в виде строки - теряется точность!
+    remaining_time = '123456.0987654321'
+    getcontext().prec = 10
+    decimal_remaining_time = Decimal(remaining_time)
+
+    with open('rpg.json', 'r') as read_file:
+        dungeon_map = json.load(read_file)
+    current_state = {
+        'loc': 'Location_0_tm0',
+        'exp': 0,
+        'date': str(datetime.timedelta(seconds=0.0)),
+    }
+    vasily_player = Player(name='Vasily', data_dict=current_state)
+    master = DungeonMaster(player=vasily_player, map=dungeon_map)
+    master.tell()
+    # Учитывая время и опыт, не забывайте о точности вычислений!
