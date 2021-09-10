@@ -94,22 +94,21 @@
 
 import datetime
 import json
-from pprint import pprint
 
 from dungeon_master import DungeonMaster
 
 if __name__ == '__main__':
-    field_names = ['current_location', 'current_experience', 'current_date']
     remaining_time = '123456.0987654321'
 
     with open('rpg.json', 'r') as read_file:
         dungeon_map = dict(json.load(read_file))
     current_state = {
-        'loc': 'Location_0_tm0',
-        'exp': 0,
-        'date': datetime.timedelta(seconds=0.0),
+        'name': 'Vasily',
+        'current_location': 'Location_0_tm0',
+        'current_experience': 0,
+        'current_date': datetime.timedelta(seconds=0.0),
     }
-    master = DungeonMaster(name='Vasily', data_dict=current_state, dung_map=dungeon_map, time=remaining_time)
+    master = DungeonMaster(data_dict=current_state, dung_map=dungeon_map, time=remaining_time)
     master.tell()
 
     # Учитывая время и опыт, не забывайте о точности вычислений!

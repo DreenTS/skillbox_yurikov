@@ -1,5 +1,7 @@
+import csv
 import datetime
 import os
+import sys
 import time
 from copy import deepcopy
 from decimal import Decimal, getcontext
@@ -12,17 +14,20 @@ colorama.init()
 
 class DungeonMaster:
 
-    def __init__(self, name, data_dict, dung_map, time):
-        self.origin_data = [name, data_dict, dung_map, time]
-        self.player = {'name': name,
-                       'loc': self.origin_data[1]['loc'],
-                       'exp': self.origin_data[1]['exp'],
-                       'date': self.origin_data[1]['date']}
-        self.map = deepcopy(self.origin_data[2][self.player['loc']])
-        self.str_remaining_time = self.origin_data[3]
+    def __init__(self, data_dict, dung_map, time):
+        self.field_names = ['name', 'current_location', 'current_experience', 'current_date']
+        self.origin_data = [data_dict, dung_map, time]
+        self.player = {'name': self.origin_data[0]['name'],
+                       'current_location': self.origin_data[0]['current_location'],
+                       'current_experience': self.origin_data[0]['current_experience'],
+                       'current_date': self.origin_data[0]['current_date'],
+                       }
+        self.map = deepcopy(self.origin_data[1][self.player['current_location']])
+        self.str_remaining_time = self.origin_data[2]
         self._str_to_decimal_time()
         self._time_pattern = r'tm\d*\.{,1}\d*'
         self._exp_pattern = r'exp\d*\.{,1}\d*'
+        self.save_to = 'dungeon.csv'
 
     def tell(self):
         self._start()
@@ -43,7 +48,8 @@ class DungeonMaster:
             print(f'\nХа-ха! Ты в тупике и монстров не осталось. Кажется, твоя песенка спета', end='')
             self._dots()
             self._lose()
-        print(f'\nТы находишься в локации {self.player["loc"]}. Что дальше?')
+            return
+        print(f'\nТы находишься в локации {self.player["current_location"]}. Что дальше?')
         for i, point in enumerate(self.map):
             if isinstance(point, dict):
                 print(f'{i + 1}. Перейти в локацию {list(point.keys())[0]}. '
@@ -61,7 +67,7 @@ class DungeonMaster:
             if isinstance(choice, int) and choice in range(len(self.map) + 1):
                 action = self.map[choice]
                 temp_time = self._get_time_from_pattern(re_str=action)
-                self.player['date'] += datetime.timedelta(seconds=float(temp_time))
+                self.player['current_date'] += datetime.timedelta(seconds=float(temp_time))
                 self.decimal_remaining_time -= Decimal(temp_time)
                 if isinstance(action, dict):
                     self._travel(action=action)
@@ -74,8 +80,8 @@ class DungeonMaster:
 
     def _print_stats(self):
         cprint(f'{self.player["name"]}', color='green')
-        cprint(f'EXP = {self.player["exp"]} / 280', color='cyan')
-        cprint(f'Прошло времени: {self.player["date"]}', color='yellow')
+        cprint(f'EXP = {self.player["current_experience"]} / 280', color='cyan')
+        cprint(f'Прошло времени: {self.player["current_date"]}', color='yellow')
         cprint(f'Осталось секунд на прохождение: {self.decimal_remaining_time}', color='blue')
 
     def _get_time_from_pattern(self, re_str):
@@ -88,11 +94,11 @@ class DungeonMaster:
         return re.search(self._exp_pattern, re_str).group()[3:]
 
     def _travel(self, action):
-        self.player['loc'] = list(action.keys())[0]
-        self.map = action[self.player['loc']]
+        self.player['current_location'] = list(action.keys())[0]
+        self.map = action[self.player['current_location']]
 
     def _fight(self, action):
-        self.player['exp'] += int(self._get_exp_from_pattern(re_str=action))
+        self.player['current_experience'] += int(self._get_exp_from_pattern(re_str=action))
         self.map.remove(action)
 
     def _start(self):
@@ -114,23 +120,42 @@ class DungeonMaster:
         _ = input()
 
     def _lose(self):
-        print('Подземелье затопило и ты не смог выбраться. Попробуем ещё раз', end='')
-        self._dots()
-        self._str_to_decimal_time()
-        self.player['loc'] = self.origin_data[1]['loc']
-        self.player['exp'] = self.origin_data[1]['exp']
-        self.player['date'] = self.origin_data[1]['date']
-        self.map = deepcopy(self.origin_data[2][self.player['loc']])
-        self.str_remaining_time = self.origin_data[3]
-        self.tell()
+        print('Подземелье затопило и ты не смог выбраться. Попробуем ещё раз?')
+        print('1. Да\n2. Нет')
+        try:
+            choice = int(input('Выберите действие (номер): '))
+        except ValueError:
+            print('Похоже, ты написал неправильный номер. Давай попробуем ещё раз', end='')
+            self._dots()
+        else:
+            if choice == 1:
+                print('Ну, ещё одна попытка, удачи', end='')
+                self._dots()
+                self._str_to_decimal_time()
+                self.player['current_location'] = self.origin_data[0]['current_location']
+                self.player['current_experience'] = self.origin_data[0]['current_experience']
+                self.player['current_date'] = self.origin_data[0]['current_date']
+                self.map = deepcopy(self.origin_data[1][self.player['current_location']])
+                self.str_remaining_time = self.origin_data[2]
+                self.tell()
+                os.system('cls')
+            elif choice == 2:
+                print('Ты решил сдаться... Ну что же, твоё право. Твоя смерть будет увековечена в файле dungeon.csv .\n'
+                      'Прощай!')
+                self._dots()
+                self._save_result()
+            else:
+                print('Похоже, Ты написал неправильный номер. Давай попробуем ещё раз', end='')
+                self._dots()
 
     def _is_win(self):
-        if self.player['loc'] == 'Hatch_tm159.098765432':
-            if self.player['exp'] == 280:
+        if self.player['current_location'] == 'Hatch_tm159.098765432':
+            if self.player['current_experience'] == 280:
                 print('Ну наконец-то! Ты выбрался наружу... Ну ладно, беги давай. Твоя награда - твоя жизнь.')
-                return True
+                self._save_result()
             else:
-                print(f'Для открытия люка тебе необходим иметь 280 EXP. Твоё количество EXP: {self.player["exp"]}. '
+                print(f'Для открытия люка тебе необходим иметь 280 EXP. Твоё количество EXP: '
+                      f'{self.player["current_experience"]}. '
                       f'Попробуем ещё раз', end='')
                 self._dots()
                 self._lose()
@@ -143,8 +168,15 @@ class DungeonMaster:
             time.sleep(1.5)
         os.system('cls')
 
+    def _save_result(self):
+        with open(self.save_to, 'w', newline='', encoding='utf-8') as out_csv:
+            writer = csv.DictWriter(out_csv, delimiter=',', fieldnames=self.field_names)
+            writer.writeheader()
+            writer.writerow(self.player)
+        sys.exit()
+
 
 if __name__ == '__main__':
     dungeon_map = {'Location_0_tm0': []}
-    master = DungeonMaster(name='Nick', data_dict={}, dung_map=dungeon_map, time='123456.0987654321')
+    master = DungeonMaster(data_dict={}, dung_map=dungeon_map, time='123456.0987654321')
     master.tell()
