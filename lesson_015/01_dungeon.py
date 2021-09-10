@@ -96,7 +96,7 @@ import datetime
 import json
 from pprint import pprint
 
-from dungeon_master import DungeonMaster, Player
+from dungeon_master import DungeonMaster
 
 if __name__ == '__main__':
     field_names = ['current_location', 'current_experience', 'current_date']
@@ -107,10 +107,9 @@ if __name__ == '__main__':
     current_state = {
         'loc': 'Location_0_tm0',
         'exp': 0,
-        'date': str(datetime.timedelta(seconds=0.0)),
+        'date': datetime.timedelta(seconds=0.0),
     }
-    vasily_player = Player(name='Vasily', data_dict=current_state)
-    master = DungeonMaster(player=vasily_player, dung_map=dungeon_map, time=remaining_time)
+    master = DungeonMaster(name='Vasily', data_dict=current_state, dung_map=dungeon_map, time=remaining_time)
     master.tell()
 
     # Учитывая время и опыт, не забывайте о точности вычислений!
