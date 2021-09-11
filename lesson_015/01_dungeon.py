@@ -98,9 +98,11 @@ import json
 from dungeon_master import DungeonMaster
 
 if __name__ == '__main__':
-    remaining_time = '123456.0987654321'
+    remaining_time = '123456.0987654321'  # TODO Имя константы пишется большими буквами, располагаются константы вверху
+                                          #  модуля сразу после импортов либо в отдельном модуле настроек проекта
 
     with open('rpg.json', 'r') as read_file:
+        # TODO Хардкодит данные - плохая практика, присвойте имя файла константе и используйте её в коде
         dungeon_map = dict(json.load(read_file))
     current_state = {
         'name': 'Vasily',
