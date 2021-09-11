@@ -3,6 +3,7 @@ import datetime
 import os
 import sys
 import time
+from project_settings import *
 from copy import deepcopy
 from decimal import Decimal, getcontext
 import re
@@ -28,9 +29,9 @@ class DungeonMaster:
     Запускает игровую сессию и управляет ей. Подробнее см. docstrings методов класса.
     """
 
-    def __init__(self, data_dict, dung_map, time):
-        self.field_names = ['name', 'current_location', 'current_experience', 'current_date']
-        self.origin_data = [data_dict, dung_map, time]
+    def __init__(self, data_dict, dung_map):
+        self.field_names = FIELD_NAMES_FOR_CSV_FILE
+        self.origin_data = [data_dict, dung_map, REMAINING_TIME]
         self.player = {'name': self.origin_data[0]['name'],
                        'current_location': self.origin_data[0]['current_location'],
                        'current_experience': self.origin_data[0]['current_experience'],
@@ -39,9 +40,9 @@ class DungeonMaster:
         self.map = deepcopy(self.origin_data[1][self.player['current_location']])
         self.str_remaining_time = self.origin_data[2]
         self._str_to_decimal_time()
-        self._time_pattern = r'tm\d*\.{,1}\d*'
-        self._exp_pattern = r'exp\d*\.{,1}\d*'
-        self.save_to = 'dungeon.csv'
+        self._time_pattern = TIME_PATTERN_FOR_JSON
+        self._exp_pattern = EXP_PATTERN_FOR_JSON
+        self.save_to = CSV_FILENAME_TO_SAVE
 
     def tell(self):
         """
@@ -295,5 +296,5 @@ class DungeonMaster:
 
 if __name__ == '__main__':
     dungeon_map = {'Location_0_tm0': []}
-    master = DungeonMaster(data_dict={}, dung_map=dungeon_map, time='123456.0987654321')
+    master = DungeonMaster(data_dict={}, dung_map=dungeon_map)
     master.tell()

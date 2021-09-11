@@ -95,22 +95,16 @@
 import datetime
 import json
 
+from project_settings import *
 from dungeon_master import DungeonMaster
 
 if __name__ == '__main__':
-    remaining_time = '123456.0987654321'  # TODO Имя константы пишется большими буквами, располагаются константы вверху
-                                          #  модуля сразу после импортов либо в отдельном модуле настроек проекта
 
-    with open('rpg.json', 'r') as read_file:
-        # TODO Хардкодит данные - плохая практика, присвойте имя файла константе и используйте её в коде
+    with open(JSON_FILENAME_TO_READ, 'r') as read_file:
         dungeon_map = dict(json.load(read_file))
-    current_state = {
-        'name': 'Vasily',
-        'current_location': 'Location_0_tm0',
-        'current_experience': 0,
-        'current_date': datetime.timedelta(seconds=0.0),
-    }
-    master = DungeonMaster(data_dict=current_state, dung_map=dungeon_map, time=remaining_time)
+    local_player_data = ['Vasily', 'Location_0_tm0', 0, datetime.timedelta(seconds=0.0)]
+    current_state = dict(zip(FIELD_NAMES_FOR_CSV_FILE, local_player_data))
+    master = DungeonMaster(data_dict=current_state, dung_map=dungeon_map)
     master.tell()
 
     # Учитывая время и опыт, не забывайте о точности вычислений!
