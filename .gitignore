@@ -4,6 +4,7 @@
 # User-specific stuff:
 .idea/
 chatbot/settings.py
+TODOs.py
 
 
 ### Python template
