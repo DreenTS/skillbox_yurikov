@@ -216,7 +216,7 @@ class Bot:
                    f'Куда: {context["arrival_city"].capitalize()}\n....' \
                    f'Дата: {context["flight"]["date"]}\n....Стоимость билета: {context["flight"]["price"]}\n....' \
                    f'Количество мест: {context["number_of_seats"]}\n....' \
-                   f'Комментарий: {context["comment"]}\n\n'
+                   f'Комментарий: {context["comment"].capitalize()}\n\n'
         return res
 
     def dispatcher(self, context, from_city, to_city):
