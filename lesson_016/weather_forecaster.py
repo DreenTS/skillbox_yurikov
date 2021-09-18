@@ -44,11 +44,11 @@ class WeatherForecaster:
             html_doc = BeautifulSoup(response.text, features='html.parser')
             tag_list = html_doc.find_all('div', {'class': self.data_for_parsing['city_class_for_html_tag']})
             for tags in tag_list:
-                if user_choice in str(tags).lower():
-                    city_name = re.search(self.data_for_parsing['name_re'], str(tags)).group()[3:-1]
-                    city_url = settings.BASE_URL + re.search(self.data_for_parsing['url_re'], str(tags)).group()[6:-1]
+                city_name = re.search(self.data_for_parsing['name_re'], str(tags)).group()[3:-1]
+                if user_choice == city_name.lower():
+                    city_url = re.search(self.data_for_parsing['url_re'], str(tags)).group()[6:-1]
                     city['city'] = city_name
-                    city['url'] = city_url
+                    city['url'] = settings.BASE_URL + city_url
                     break
             else:
                 raise WrongCityNameError
