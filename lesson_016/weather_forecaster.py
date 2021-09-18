@@ -1,5 +1,9 @@
 import os
+import re
 import time
+
+import requests
+from bs4 import BeautifulSoup
 
 import settings
 
@@ -33,7 +37,22 @@ class WeatherForecaster:
                 self._dots()
 
     def _get_city_from_network(self, user_choice):
-        return 'city'
+        city = {}
+        eng_letter = settings.LETTERS_IN_TRANSCRIPTION[user_choice[0].upper()]
+        response = requests.get(self.data_for_parsing['cities_list_url'] + eng_letter)
+        if response.status_code == 200:
+            html_doc = BeautifulSoup(response.text, features='html.parser')
+            tag_list = html_doc.find_all('div', {'class': self.data_for_parsing['city_class_for_html_tag']})
+            for tags in tag_list:
+                if user_choice in str(tags).lower():
+                    city_name = re.search(self.data_for_parsing['name_re'], str(tags)).group()[3:-1]
+                    city_url = settings.BASE_URL + re.search(self.data_for_parsing['url_re'], str(tags)).group()[6:-1]
+                    city['city'] = city_name
+                    city['url'] = city_url
+                    break
+            else:
+                raise WrongCityNameError
+        return city
 
     def _dots(self):
         """
