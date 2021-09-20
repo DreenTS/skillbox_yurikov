@@ -28,20 +28,51 @@ class WeatherForecaster:
         self.data_for_parsing = settings.DATA_FOR_PARSING
         self.date_for_forecast = date_for_forecast or []
         self.city_for_forecast = None
+        self.forecast_data = {}
 
     def forecast(self):
         self._user_location_choice()
-        if not self.date_for_forecast:
-            self._date_input()
+        self._user_date_choice()
+        self._get_forecast_by_date()
+
+    def _get_forecast_by_date(self):
+        if len(self.date_for_forecast) == 1:
+            self._get_forecast_from_network()
         else:
-            self.date_for_forecast = self.date_for_forecast.split('-')
-            try:
-                self._date_check(dates=self.date_for_forecast)
-            except (ValueError, WrongDateRangeError) as exc:
-                self.date_for_forecast.clear()
-                print(f'{exc}\nДата должна быть в формате ДД.ММ или ДД.ММ-ДД.ММ , Давайте попробуем ещё раз', end='')
-                self._dots()
-                self._date_input()
+            first_date, second_date = self.date_for_forecast
+            self.date_for_forecast.clear()
+            while first_date <= second_date:
+                self.date_for_forecast.append(first_date)
+                first_date += datetime.timedelta(days=1)
+            self._get_forecast_from_network()
+
+    def _get_forecast_from_network(self):
+        for date in self.date_for_forecast:
+            date_url = datetime.date.strftime(date, '%d-%B').lower()
+            response = requests.get(self.city_for_forecast['url'] + date_url)
+            if response.status_code == 200:
+                html_doc = BeautifulSoup(response.text, features='html.parser')
+                tag_list = html_doc.find_all('div', {'class': self.data_for_parsing['classes_for_html_tag'][1]})
+                for tags in tag_list:
+                    day_tags = tags.find_all('div', {'class': self.data_for_parsing['classes_for_html_tag'][2]})
+                    for tag in day_tags:
+                        if 'Днем' in str(tag):
+                            temperature = re.search(self.data_for_parsing['forecast_re'][0], str(tag)).group()[5:-1]
+                            description = re.search(self.data_for_parsing['forecast_re'][1], str(tag)).group()[7:-1]
+                            pressure = re.search(self.data_for_parsing['forecast_re'][2], str(tag)).group()
+                            humidity = re.search(self.data_for_parsing['forecast_re'][3], str(tag)).group()
+                            wind = re.search(self.data_for_parsing['forecast_re'][4], str(tag)).group()
+                            precipitation = re.search(self.data_for_parsing['forecast_re'][5], str(tag)).group()
+                            self.forecast_data[date] = {
+                                'temperature': f'Температура: {temperature}',
+                                'description': description[0].upper() + description[1:],
+                                'pressure': pressure,
+                                'humidity': humidity,
+                                'wind': wind,
+                                'precipitation': precipitation,
+                            }
+                            break
+                    break
 
     def _user_location_choice(self):
         is_ok_choice = False
@@ -64,17 +95,30 @@ class WeatherForecaster:
         response = requests.get(self.data_for_parsing['cities_list_url'] + eng_letter)
         if response.status_code == 200:
             html_doc = BeautifulSoup(response.text, features='html.parser')
-            tag_list = html_doc.find_all('div', {'class': self.data_for_parsing['city_class_for_html_tag']})
+            tag_list = html_doc.find_all('div', {'class': self.data_for_parsing['classes_for_html_tag'][0]})
             for tags in tag_list:
-                city_name = re.search(self.data_for_parsing['name_re'], str(tags)).group()[3:-1]
+                city_name = re.search(self.data_for_parsing['city_name_re'], str(tags)).group()[3:-1]
                 if user_choice == city_name.lower():
-                    city_url = re.search(self.data_for_parsing['url_re'], str(tags)).group()[6:-1]
+                    city_url = re.search(self.data_for_parsing['city_url_re'], str(tags)).group()[6:-1]
                     city['city'] = city_name
                     city['url'] = settings.BASE_URL + city_url
                     break
             else:
                 raise WrongCityNameError
         return city
+
+    def _user_date_choice(self):
+        if not self.date_for_forecast:
+            self._date_input()
+        else:
+            self.date_for_forecast = self.date_for_forecast.split('-')
+            try:
+                self._date_check(dates=self.date_for_forecast)
+            except (ValueError, WrongDateRangeError) as exc:
+                self.date_for_forecast.clear()
+                print(f'{exc}\nДата должна быть в формате ДД.ММ или ДД.ММ-ДД.ММ , Давайте попробуем ещё раз', end='')
+                self._dots()
+                self._date_input()
 
     def _date_input(self):
         while not self.date_for_forecast:
@@ -121,5 +165,8 @@ class WeatherForecaster:
 if __name__ == '__main__':
     forecaster = WeatherForecaster(date_for_forecast='')
     forecaster.forecast()
-    print(forecaster.city_for_forecast)
-    print(forecaster.date_for_forecast)
+    print(f'Город: {forecaster.city_for_forecast["city"]}')
+    for date, content in forecaster.forecast_data.items():
+        print(f'\n{datetime.date.strftime(date, "%d.%m")}')
+        for v in content.values():
+            print(f'\t{v}')

@@ -3,12 +3,30 @@ import re
 BASE_URL = 'https://pogoda.mail.ru'
 CITY_URL_COMP = re.compile(r'href="[a-z\-_/]+"')
 CITY_NAME_COMP = re.compile(r'/">[а-яА-Я\-\s]+<')
+TEMPERATURE_COMP = re.compile(r'ure">[0-9°+-]+<')
+DESCRIPTION_COMP = re.compile(r'title="[а-яА-Я\s\-,]+"')
+PRESSURE_COMP = re.compile(r'Давление: [0-9]+ мм рт\. ст\.')
+HUMIDITY_COMP = re.compile(r'Влажность: [0-9]+%')
+WIND_COMP = re.compile(r'Ветер: [0-9]+ м/c')
+PRECIPITATION_COMP = re.compile(r'Вероятность осадков: [0-9]+%')
 
 DATA_FOR_PARSING = {
     'cities_list_url': BASE_URL + '/country/russia/',
-    'city_class_for_html_tag': 'city-list__simple',
-    'url_re': CITY_URL_COMP,
-    'name_re': CITY_NAME_COMP,
+    'classes_for_html_tag': [
+        'city-list__simple',
+        'cols__column__item cols__column__item_2-1 cols__column__item_2-1_ie8',
+        'day day_period',
+    ],
+    'city_url_re': CITY_URL_COMP,
+    'city_name_re': CITY_NAME_COMP,
+    'forecast_re': [
+        TEMPERATURE_COMP,
+        DESCRIPTION_COMP,
+        PRESSURE_COMP,
+        HUMIDITY_COMP,
+        WIND_COMP,
+        PRECIPITATION_COMP,
+    ]
 }
 
 LETTERS_IN_TRANSCRIPTION = {
