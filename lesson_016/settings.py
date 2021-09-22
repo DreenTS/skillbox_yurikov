@@ -11,7 +11,7 @@ WIND_COMP = re.compile(r'Ветер: [0-9]+ м/c')
 PRECIPITATION_COMP = re.compile(r'Вероятность осадков: [0-9]+%')
 
 DB_NAME = 'forecast.db'
-FIELDNAMES_FOR_DB = ['locality', 'forecast_date', 'temperature', 'description', 'pressure',
+FIELDNAMES_FOR_DB = ['location', 'forecast_date', 'temperature', 'description', 'pressure',
                      'humidity', 'wind', 'precipitation']
 
 DATA_FOR_PARSING = {

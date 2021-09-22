@@ -10,24 +10,44 @@ class DatabaseUpdater:
         self.db_name = settings.DB_NAME
         self.proxy = DATABASE_PROXY
 
-    def _add_forecasts(self, forecasts):
+    def run(self, mode, **kwargs):
         database = peewee.SqliteDatabase(self.db_name)
         self.proxy.initialize(database)
         self.proxy.connect()
+        database.create_tables([Location, Forecast])
 
-        database.create_tables([Locality, Forecast])
-        try:
-            locality_to_save = Locality.get(Locality.name == forecasts[0][settings.FIELDNAMES_FOR_DB[0]])
-        except peewee.DoesNotExist:
-            locality_to_save = Locality(name=forecasts[0][settings.FIELDNAMES_FOR_DB[0]])
-            locality_to_save.save()
-        for frcst in forecasts:
-            frcst[settings.FIELDNAMES_FOR_DB[0]] = locality_to_save
-        _forecasts_to_save = Forecast.insert_many(forecasts).execute()
-        print('Прогноз сохранён в БД!')
+        if mode == 'add':
+            return self._add_forecasts(data=kwargs)
+        elif mode == 'get':
+            return self._get_forecasts(data=kwargs)
 
         self.proxy.close()
         database.close()
+
+    def _add_forecasts(self, data):
+        loc_data = data['data']
+        try:
+            location_to_save = Location.get(Location.name == loc_data[0][settings.FIELDNAMES_FOR_DB[0]])
+        except peewee.DoesNotExist:
+            location_to_save = Location(name=loc_data[0][settings.FIELDNAMES_FOR_DB[0]])
+            location_to_save.save()
+        for forecast in loc_data:
+            forecast[settings.FIELDNAMES_FOR_DB[0]] = location_to_save
+            try:
+                _ = Forecast.get(Forecast.forecast_date == forecast[settings.FIELDNAMES_FOR_DB[1]],
+                                 Forecast.location == location_to_save)
+            except peewee.DoesNotExist:
+                Forecast.insert_many(forecast).execute()
+        print('\nПрогноз сохранён в БД!')
+
+    def _get_forecasts(self, data):
+        loc_data = data['data']
+        location = Location.get(Location.name == loc_data[0])
+        result = []
+        for date in loc_data[1]:
+            forecast = Forecast.get(Forecast.location == location, Forecast.forecast_date == date)
+            result.append(forecast)
+        return result
 
 
 class BaseTable(peewee.Model):
@@ -35,12 +55,12 @@ class BaseTable(peewee.Model):
         database = DATABASE_PROXY
 
 
-class Locality(BaseTable):
+class Location(BaseTable):
     name = peewee.CharField()
 
 
 class Forecast(BaseTable):
-    locality = peewee.ForeignKeyField(Locality)
+    location = peewee.ForeignKeyField(Location)
     forecast_date = peewee.DateTimeField()
     temperature = peewee.CharField()
     description = peewee.CharField()
