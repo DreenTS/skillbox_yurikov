@@ -64,9 +64,6 @@ def from_parser(forecaster):
     if args['func'] == 'add':
         forecaster.add_forecast(date=args['date'], location=args['location'])
     elif args['func'] == 'get':
-        if args['mode'] not in ['console', 'image']:
-            print('\nЗначение аргумента mode должно быть "console" или "image".')
-            os.system('exit')
         forecaster.get_forecast(date=args['date'], location=args['location'], mode=args['mode'])
 
 
