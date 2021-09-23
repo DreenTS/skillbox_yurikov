@@ -46,3 +46,33 @@
 # Приконнектится по полученному url-пути к базе данных
 # Инициализировать её через DatabaseProxy()
 # https://peewee.readthedocs.io/en/latest/peewee/database.html#dynamically-defining-a-database
+
+import argparse as argp
+import os
+
+import weather_forecaster
+
+
+def from_parser(forecaster):
+    parser = argp.ArgumentParser(description='Score counter')
+    parser.add_argument('-action', action='store', dest='func')
+    parser.add_argument('-date', action='store', dest='date')
+    parser.add_argument('-location', action='store', dest='location')
+    parser.add_argument('-mode', action='store', dest='mode')
+    args = vars(parser.parse_args())
+
+    if args['func'] == 'add':
+        forecaster.add_forecast(date=args['date'], location=args['location'])
+    elif args['func'] == 'get':
+        if args['mode'] not in ['console', 'image']:
+            print('\nЗначение аргумента mode должно быть "console" или "image".')
+            os.system('exit')
+        forecaster.get_forecast(date=args['date'], location=args['location'], mode=args['mode'])
+
+
+if __name__ == '__main__':
+    try:
+        my_forecaster = weather_forecaster.WeatherForecaster()
+        from_parser(forecaster=my_forecaster)
+    except Exception as exc:
+        print(f'Ошибка! {exc}')

@@ -50,7 +50,7 @@ class WeatherForecaster:
         self.database = DatabaseUpdater()
         self._need_date_check = True
 
-    def add_forecast(self, date, location):
+    def add_forecast(self, date, location, mode=None):
         user_date = date.split('-')
         try:
             if self._need_date_check:
@@ -212,7 +212,6 @@ class WeatherForecaster:
     def _draw_forecast(self):
         img_maker = image_maker.ImageMaker(forecasts=self.forecast_data)
         img_maker.draw()
-        self._clear()
 
     def _clear(self):
         self.date_for_forecast.clear()
