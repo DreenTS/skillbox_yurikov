@@ -3,7 +3,7 @@ import re
 BASE_URL = 'https://pogoda.mail.ru'
 LOCATION_URL_COMP = re.compile(r'href="[a-z\-_/]+"')
 LOCATION_NAME_COMP = re.compile(r'/">[а-яА-Я\-\s,.]+<')
-TEMPERATURE_COMP = re.compile(r'ure">[0-9°+-]+<')
+TEMPERATURE_COMP = re.compile(r'ure">[0-9+-]+°<')
 DESCRIPTION_COMP = re.compile(r'title="[а-яА-Я\s\-,]+"')
 PRESSURE_COMP = re.compile(r'Давление: [0-9]+ мм рт\. ст\.')
 HUMIDITY_COMP = re.compile(r'Влажность: [0-9]+%')
@@ -64,4 +64,17 @@ LETTERS_IN_TRANSCRIPTION = {
     'Э': 'eh',
     'Ю': 'yu',
     'Я': 'ya',
+}
+
+IMAGE_TEMPLATES = {
+    'background': ['templates/background.jpg', (255, 255, 255)],
+    'cloud': ['templates/cloud.png', (77, 75, 67)],
+    'sun': ['templates/sun.png', (0, 255, 255)],
+    'precipitation': ['templates/precipitation.png', (85, 47, 0)],
+}
+
+THEMES_PATTERNS = {
+    'cloud': ['облач', 'туман', 'пасмурн', 'дым'],
+    'sun': ['ясно'],
+    'precipitation': ['дожд', 'метел', 'снег', 'лив'],
 }

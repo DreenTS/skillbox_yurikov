@@ -1,13 +1,13 @@
 import datetime
 import os
 import re
-import time
 
 import requests
 from bs4 import BeautifulSoup
 
 from db_init import *
 import settings
+import image_maker
 
 
 class WrongLocationError(Exception):
@@ -95,7 +95,7 @@ class WeatherForecaster:
         if mode == 'console':
             self._print_forecast()
         elif mode == 'image':
-            pass
+            self._draw_forecast()
         self._clear()
 
     def _date_check(self, dates):
@@ -174,7 +174,7 @@ class WeatherForecaster:
                     day_tags = tags.find_all('div', {'class': self.data_for_parsing['classes_for_html_tag'][2]})
                     for tag in day_tags:
                         if 'Днем' in str(tag):
-                            temperature = re.search(self.data_for_parsing['forecast_re'][0], str(tag)).group()[5:-1]
+                            temperature = re.search(self.data_for_parsing['forecast_re'][0], str(tag)).group()[5:-2]
                             description = re.search(self.data_for_parsing['forecast_re'][1], str(tag)).group()[7:-1]
                             pressure = re.search(self.data_for_parsing['forecast_re'][2], str(tag)).group()
                             humidity = re.search(self.data_for_parsing['forecast_re'][3], str(tag)).group()
@@ -187,7 +187,7 @@ class WeatherForecaster:
                                 {
                                     fieldnames[0]: self.location_for_forecast,
                                     fieldnames[1]: date,
-                                    fieldnames[2]: f'Температура: {temperature}',
+                                    fieldnames[2]: f'Температура: {temperature} град. С',
                                     fieldnames[3]: description[0].upper() + description[1:],
                                     fieldnames[4]: pressure,
                                     fieldnames[5]: humidity,
@@ -209,6 +209,11 @@ class WeatherForecaster:
                 else:
                     print(f'\t{v}')
 
+    def _draw_forecast(self):
+        img_maker = image_maker.ImageMaker(forecasts=self.forecast_data)
+        img_maker.draw()
+        self._clear()
+
     def _clear(self):
         self.date_for_forecast.clear()
         self.location_for_forecast = None
@@ -222,4 +227,4 @@ if __name__ == '__main__':
     forecaster.add_forecast(date='23.09-26.09', location='Москва')
     forecaster.get_forecast(date='24.09-25.09', location='Москва', mode='console')
     forecaster.add_forecast(date='12.07', location='Комсомольск-на-Амуре')
-
+    forecaster.get_forecast(date='12.07', location='Комсомольск-на-Амуре', mode='image')
