@@ -5,6 +5,11 @@ import cv2
 
 
 class ImageMaker:
+    """
+    Класс для создания изображений с прогнозами ("открыток"),
+    используя заготовки изображений.
+
+    """
 
     def __init__(self, forecasts):
         self.templates = settings.IMAGE_TEMPLATES
@@ -12,20 +17,54 @@ class ImageMaker:
         self.forecasts = forecasts
 
     def draw(self):
+        """
+        Запуск отрисовки.
+
+        Проходится циклом по списку переданных прогнозов:
+        1) Определяет тему оформления изображения
+        2) Красит в градиент заготовку заднего фона и добавляет на него лого (цвет и лого зависят от темы)
+        3) Печатает текст на изображении
+        4) Сохраняет изображение
+
+        :return: None
+        """
+
         for forecast in self.forecasts:
             theme = self._get_themes(forecast=forecast)
             background_and_logo = self._gradient_and_logo(theme=theme)
             finished_image = self._print_text(forecast=forecast, src=background_and_logo)
-            loc_name = self._get_loc_name(loc=forecast["location"])
+            loc_name = self._get_loc_en_name(loc=forecast["location"])
             cv2.imwrite(f'{loc_name} {forecast["forecast_date"]}.jpg', finished_image)
 
     def _get_themes(self, forecast):
+        """
+        Определение темы изображения.
+
+        Было решено отказаться от регулярных выражений,
+        т.к. пул описаний погоды на сайте довольно небольшой, так получается чуть быстрее (и реализация проще).
+        (см. THEMES_PATTERNS в settings.py)
+
+        :param forecast: dict, словарь отдельного прогноза
+        :return: str, тема оформления изображения
+        """
+
         for theme, patterns in self.themes_patterns.items():
             for pattern in patterns:
                 if pattern in forecast['description'].lower():
                     return theme
 
     def _gradient_and_logo(self, theme):
+        """
+        Отрисовка градиента и лого.
+
+        Двигается вдоль оси x, рисуя линию. Цвет линии постепенно меняется от цвета, определённого темой, до белого
+        (см. IMAGE_TEMPLATES['background'][1] в settings.py).
+        После чего попиксельно отрисовываетлого на полуившемся фоне.
+
+        :param theme: str, тема оформления изображения
+        :return: ndarray, массив изображения
+        """
+
         logo = cv2.imread(self.templates[theme][0], cv2.IMREAD_UNCHANGED)
         res = cv2.imread(self.templates['background'][0])
 
@@ -33,7 +72,7 @@ class ImageMaker:
         b_end, g_end, r_end = self.templates['background'][1]
         modif = 0.75
 
-        for x in range(res.shape[1]):
+        for x in range(res.shape[1], -1, -1):
             cv2.line(res, (x, 0), (x, res.shape[0]), (b_curr, g_curr, r_curr), 1)
             b_curr += (b_end - b_curr) / res.shape[1] * modif
             g_curr += (g_end - g_curr) / res.shape[1] * modif
@@ -48,6 +87,14 @@ class ImageMaker:
         return res
 
     def _print_text(self, forecast, src):
+        """
+        Печать текста на изображении.
+
+        :param forecast: dict, словарь отдельного прогноза
+        :param src: ndarray, массив изображения
+        :return: ndarray, массив готового изображения
+        """
+
         res = src
         forecast['forecast_date'] = datetime.date.strftime(forecast['forecast_date'], '%d.%m.%Y')
         x = round(src.shape[1] * .05)
@@ -58,7 +105,15 @@ class ImageMaker:
             y += step
         return res
 
-    def _get_loc_name(self, loc):
+    def _get_loc_en_name(self, loc):
+        """
+        Получение транслита названия населённого пункта
+        для формирования имени сохраняемого файла.
+
+        :param loc: str, название населённого пункта на русском языке
+        :return: str, название населённого пункта  транслитом
+        """
+
         res = ''
         for symb in loc.upper():
             if symb not in 'ЁЪЬ':

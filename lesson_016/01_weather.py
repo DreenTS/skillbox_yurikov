@@ -48,7 +48,6 @@
 # https://peewee.readthedocs.io/en/latest/peewee/database.html#dynamically-defining-a-database
 
 import argparse as argp
-import os
 
 import weather_forecaster
 
