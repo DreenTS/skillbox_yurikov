@@ -72,3 +72,5 @@ if __name__ == '__main__':
         from_parser(forecaster=my_forecaster)
     except Exception as exc:
         print(f'Ошибка! {exc}')
+
+# зачет!
