@@ -159,7 +159,7 @@ class Bot:
                 state.step_name = curr_step['next_step']
             else:
                 result = next_step['text']
-                self._create_and_send_ticket(state=state)
+                self.create_and_send_ticket(state=state)
                 Registration(name=state.name, context=state.context)
                 state.delete()
                 return result
@@ -247,7 +247,7 @@ class Bot:
                     res += f'{i + 1})\n....{temp_ticket}\n\n'
         return res
 
-    def _create_and_send_ticket(self, state):
+    def create_and_send_ticket(self, state):
         """
         Создание и отправка билета.
 
