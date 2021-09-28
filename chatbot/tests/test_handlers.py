@@ -48,11 +48,21 @@ class HandlersTest(unittest.TestCase):
     def test_flight_handler_normal(self):
         self.context['departure_city'] = 'калининград'
         self.context['arrival_city'] = 'лондон'
-        settings.FLIGHTS['калининград']['лондон'] = [0, 1, 2, 3]
+        settings.FLIGHTS['калининград']['лондон'] = [
+            {
+                'date': '23-09-2021 11:30',
+                'price': '11 400 рублей',
+            },
+            {
+                'date': '30-09-2021 11:30',
+                'price': '9 300 рублей',
+            },
+        ]
         flight = '2'
         result = flight_handler(text=flight, context=self.context)
         self.assertEqual(result, True)
-        self.assertEqual(self.context['flight'], 1)
+        self.assertEqual(self.context['date'], '30-09-2021 11:30')
+        self.assertEqual(self.context['price'], '9 300 рублей')
 
     def test_flight_handler_failure(self):
         self.context['departure_city'] = 'калининград'
@@ -71,7 +81,7 @@ class HandlersTest(unittest.TestCase):
         seats = '2'
         result = number_of_seats_handler(text=seats, context=self.context)
         self.assertEqual(result, True)
-        self.assertEqual(self.context['number_of_seats'], 2)
+        self.assertEqual(self.context['number_of_seats'], '2')
 
     def test_number_of_seats_handler_failure(self):
         seats = 'A'
