@@ -265,3 +265,22 @@ DEFAULT_ANSWERS = [
     f'Ммм... Ничего не понятно, но очень интересно. На всякий случай, вот:\n\n{INTENTS[0]["answer"]}',
     f'М О Я...Н Е...П О Н И М А Т Ь...Т В О Я...\n\n{INTENTS[0]["answer"]}',
 ]
+
+DB_CONFIG = {
+    'provider': 'postgres',
+    'user': 'postgres',
+    'password': '',
+    'host': 'localhost',
+    'database': 'vk_chat_bot',
+}
+
+TICKET_CONFIG = {
+    'template': 'templates/ticket_template.png',
+    'name': (.03, .34),
+    'departure_city': (.03, .52),
+    'arrival_city': (.03, .72),
+    'number_of_seats': (.36, .52),
+    'phone_number': (.35, .72),
+    'date': (.55, .72),
+    'price': (.55, .52),
+}
