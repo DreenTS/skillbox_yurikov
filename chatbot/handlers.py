@@ -87,7 +87,8 @@ def flight_handler(text, context):
     flights_list = settings.FLIGHTS[context['departure_city']][context['arrival_city']]
     if text.isdigit():
         if int(text) - 1 in range(len(flights_list)):
-            context['flight'] = flights_list[int(text) - 1]
+            context['date'] = flights_list[int(text) - 1]['date']
+            context['price'] = flights_list[int(text) - 1]['price']
             return True
     return False
 
@@ -106,7 +107,7 @@ def number_of_seats_handler(text, context):
 
     if text.isdigit():
         if int(text) in range(1, 6):
-            context['number_of_seats'] = int(text)
+            context['number_of_seats'] = text
             return True
     return False
 
