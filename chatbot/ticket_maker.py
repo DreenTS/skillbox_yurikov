@@ -5,6 +5,7 @@ import requests
 import cv2
 
 import settings
+from models import UserState
 
 
 class TicketMaker:
@@ -15,16 +16,19 @@ class TicketMaker:
 
     def __init__(self, data):
         self.conf = settings.TICKET_CONFIG
-        self.data = {
-            'photo': data.photo,
-            'name': data.name,
-            'departure_city': data.context['departure_city'],
-            'arrival_city': data.context['arrival_city'],
-            'number_of_seats': data.context['number_of_seats'],
-            'phone_number': data.context['phone_number'],
-            'date': data.context['date'],
-            'price': data.context['price'],
-        }
+        if isinstance(data, UserState):
+            self.data = {
+                'photo': data.photo,
+                'name': data.name,
+                'departure_city': data.context['departure_city'],
+                'arrival_city': data.context['arrival_city'],
+                'number_of_seats': data.context['number_of_seats'],
+                'phone_number': data.context['phone_number'],
+                'date': data.context['date'],
+                'price': data.context['price'],
+            }
+        else:
+            self.data = data
 
     def draw(self):
         """
@@ -37,8 +41,8 @@ class TicketMaker:
 
         :return: BytesIO object, изображение в представлении BytesIO object
         """
-        response = requests.get(self.data['photo'], stream=True).raw
-        img_bytes = np.asarray(bytearray(response.read()), dtype="uint8")
+        response_bytes = requests.get(self.data['photo'], stream=True).raw
+        img_bytes = np.asarray(bytearray(response_bytes.read()), dtype="uint8")
         user_photo = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
 
         res = cv2.imread(self.conf['template'])
@@ -91,5 +95,5 @@ if __name__ == '__main__':
         'number_of_seats': '1',
         'phone_number': '+79999999999'
     }
-    image_maker = TicketMaker(data=data)
-    ticket = image_maker.draw()
+    ticket_maker = TicketMaker(data=data)
+    ticket = ticket_maker.draw()
